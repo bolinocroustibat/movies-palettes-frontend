@@ -1,0 +1,60 @@
+name: Deploy to prod when tag
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout repo
+      uses: actions/checkout@v4
+
+    - name: Bump version in package.json to ${{ github.ref_name }}
+      run: sed -E -i 's/"version":[[:space:]]"[0-9]+.[0-9]+.[0-9]+"/"version":\ "${{ github.ref_name }}"/g' ./package.json
+
+    - name: Commit and push updated package.json
+      uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        branch: main
+        commit_message: "chore: bump version to ${{ github.ref_name }}"
+        commit_user_name: Adrien Carpentier
+        commit_user_email: me@adriencarpentier.com
+        commit_author: Adrien Carpentier <me@adriencarpentier.com>
+
+    - name: Install Bun
+      uses: oven-sh/setup-bun@v2
+      with:
+        bun-version: latest
+
+    - name: Install Dependencies
+      run: bun install
+
+    - name: Build
+      run: bun run build
+
+    - name: Setup SSH key
+      uses: webfactory/ssh-agent@v0.9.0
+      with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: Add Known Hosts
+      run: |
+        mkdir -p ~/.ssh
+        ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+
+    - name: Deploy to Server
+      run: |
+        rsync -avz  --checksum --exclude '.git' --chown=github:www-data --delete \
+            build/ \
+            ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:${{ secrets.SERVER_PATH }}
+
+    - name: Restart Service (if needed)
+      run: |
+        ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} '
+            cd ${{ secrets.SERVER_PATH }} && 
+            pm2 restart movies-colors || pm2 start npm --name "movies-colors" -- run preview
+        '
