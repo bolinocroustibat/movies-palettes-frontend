@@ -8,6 +8,7 @@
 		"autoprefixer": "^10.4.20",
 		"biome": "^0.3.3",
 		"svelte": "^5.2.11",
+		"svelte-adapter-bun": "^0.5.2",
 		"svelte-check": "^4.1.0",
 		"tailwind-scrollbar": "^3.1.0",
 		"tailwindcss": "^3.4.15",
