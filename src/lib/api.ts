@@ -1,11 +1,22 @@
 import type { Movie } from "./types"
 import { sortColorsByProximity } from "./utils"
 
-export async function fetchMovies(): Promise<Movie[]> {
+const MOVIES_JSON_URL = import.meta.env.VITE_API_URL
+
+export async function fetchMovies(
+	customFetch: typeof fetch = fetch,
+): Promise<Movie[]> {
+	console.log("Fetching movies from", MOVIES_JSON_URL)
 	try {
-		// Dynamically import the local JSON file
-		const data = await import('../data/movies_palettes.json')
-		return organizeMovieData(data.default as Movie[])
+		const response = await customFetch(`${MOVIES_JSON_URL}`)
+		if (!response.ok) {
+			const errorData = await response.text()
+			const errorMessage = `HTTP error! Status: ${response.status}\nURL: ${MOVIES_JSON_URL}\nResponse: ${errorData}`
+			console.error(errorMessage)
+			throw new Error(errorMessage)
+		}
+		const data = await response.json()
+		return organizeMovieData(data as Movie[])
 	} catch (error) {
 		const errorMessage = `Failed to fetch movies: ${error instanceof Error ? error.message : "Unknown error"}`
 		console.error(errorMessage)
