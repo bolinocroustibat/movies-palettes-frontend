@@ -1,20 +1,18 @@
 # Movie Color Palettes
 
-A web application built with SvelteKit that displays color palettes extracted from movies. The application shows the dominant colors from various movies along with detailed information about the extraction process.
+A web application that displays color palettes extracted from movies. 
+Goes hand in hand with the [movies-palettes](https://github.com/adriencarpentier/movies-palettes-backend) backend script to generate the data.
 
 ## Dependencies
+
+- Bun or Node.js 18.x or higher
+- pnpm 8.x or higher
 
 - **Framework**: SvelteKit 2.x with Svelte 5
 - **Styling**: TailwindCSS with custom configuration
 - **Build Tool**: Vite
-- **Package Manager**: pnpm
 - **Language**: TypeScript
 - **Deployment**: GitHub Actions with automatic versioning
-
-## Prerequisites
-
-- Node.js 18.x or higher
-- pnpm 8.x or higher
 
 ## Installation
 
