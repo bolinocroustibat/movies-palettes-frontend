@@ -1,8 +1,8 @@
-import chroma from 'chroma-js';
+import chroma from "chroma-js"
 import type { RGB } from "./types"
 
 export function rgbToCSS(rgb: RGB): string {
-	return chroma(rgb).css();
+	return chroma(rgb).css()
 }
 
 export function formatDate(dateStr: string): string {
@@ -11,13 +11,13 @@ export function formatDate(dateStr: string): string {
 }
 
 export function rgbToHsl(rgb: RGB): [number, number, number] {
-	return chroma(rgb).hsl();
+	return chroma(rgb).hsl()
 }
 
 export function sortColorsByProximity(colors: RGB[]): RGB[] {
 	return [...colors].sort((a, b) => {
-		const hueA = chroma(a).hsl()[0] || 0;
-		const hueB = chroma(b).hsl()[0] || 0;
-		return hueA - hueB;
-	});
+		const hueA = chroma(a).hsl()[0] || 0
+		const hueB = chroma(b).hsl()[0] || 0
+		return hueA - hueB
+	})
 }

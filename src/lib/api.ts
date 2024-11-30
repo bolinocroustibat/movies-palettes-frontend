@@ -1,35 +1,34 @@
-import { browser } from "$app/environment"
-import localMoviesData from "../data/movies_palettes.json"
 import type { Movie } from "./types"
 import { sortColorsByProximity } from "./utils"
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api"
+const MOVIES_JSON_URL = import.meta.env.VITE_API_URL
 
-export async function fetchMovies(): Promise<Movie[]> {
-	// If we're not in the browser, return local data immediately
-	if (!browser) {
-		return processMovieData(localMoviesData as Movie[])
-	}
-
+export async function fetchMovies(
+	customFetch: typeof fetch = fetch,
+): Promise<Movie[]> {
 	try {
-		const response = await fetch(`${API_BASE_URL}/movies`)
+		const response = await customFetch(`${MOVIES_JSON_URL}`)
 		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`)
+			const errorData = await response.text()
+			const errorMessage = `HTTP error! Status: ${response.status}\nURL: ${MOVIES_JSON_URL}\nResponse: ${errorData}`
+			console.error(errorMessage)
+			throw new Error(errorMessage)
 		}
 		const data = await response.json()
 		return processMovieData(data as Movie[])
 	} catch (error) {
-		console.warn("Failed to fetch from API, falling back to local data:", error)
-		return processMovieData(localMoviesData as Movie[])
+		const errorMessage = `Failed to fetch movies: ${error instanceof Error ? error.message : "Unknown error"}\nAPI URL: ${MOVIES_JSON_URL}`
+		console.error(errorMessage)
+		throw new Error(errorMessage)
 	}
 }
 
 function processMovieData(movies: Movie[]): Movie[] {
-	return movies.map(movie => ({
+	return movies.map((movie) => ({
 		...movie,
-		palettes: movie.palettes.map(palette => ({
+		palettes: movie.palettes.map((palette) => ({
 			...palette,
-			colors: sortColorsByProximity(palette.colors)
-		}))
+			colors: sortColorsByProximity(palette.colors),
+		})),
 	}))
 }
