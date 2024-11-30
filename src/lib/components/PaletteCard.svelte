@@ -22,7 +22,7 @@ let isInfoVisible: boolean = $state(false)
 	
 	<button 
 		class="w-full text-neutral-500 hover:text-neutral-400 text-sm mb-2"
-		on:click={() => isInfoVisible = !isInfoVisible}
+		onclick={() => isInfoVisible = !isInfoVisible}
 	>
 		{isInfoVisible ? 'Hide Details ▼' : 'Show Details ▶'}
 	</button>
