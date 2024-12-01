@@ -15,7 +15,7 @@ export async function fetchMovies(
 			throw new Error(errorMessage)
 		}
 		const data = await response.json()
-		return processMovieData(data as Movie[])
+		return organizeMovieData(data as Movie[])
 	} catch (error) {
 		const errorMessage = `Failed to fetch movies: ${error instanceof Error ? error.message : "Unknown error"}\nAPI URL: ${MOVIES_JSON_URL}`
 		console.error(errorMessage)
@@ -23,12 +23,18 @@ export async function fetchMovies(
 	}
 }
 
-function processMovieData(movies: Movie[]): Movie[] {
+function organizeMovieData(movies: Movie[]): Movie[] {
 	return movies.map((movie) => ({
 		...movie,
-		palettes: movie.palettes.map((palette) => ({
-			...palette,
-			colors: sortColorsByProximity(palette.colors),
-		})),
+		palettes: movie.palettes
+			.sort((a, b) => {
+				if (!a.calculation_date) return 1;
+				if (!b.calculation_date) return -1;
+				return new Date(b.calculation_date).getTime() - new Date(a.calculation_date).getTime();
+			})
+			.map((palette) => ({
+				...palette,
+				colors: sortColorsByProximity(palette.colors),
+			})),
 	}))
 }
