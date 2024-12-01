@@ -1,24 +1,28 @@
 import type { Movie } from "./types"
 import { sortColorsByProximity } from "./utils"
 
-const MOVIES_JSON_URL = import.meta.env.VITE_API_URL
+// Use the proxy route instead of the original MOVIES_JSON_URL
+const PROXY_API_URL = "/api/movies"
 
 export async function fetchMovies(
 	customFetch: typeof fetch = fetch,
 ): Promise<Movie[]> {
-	console.log("Fetching movies from", MOVIES_JSON_URL)
+	console.log("Fetching movies from proxy API", PROXY_API_URL)
 	try {
-		const response = await customFetch(`${MOVIES_JSON_URL}`)
+		// Fetch from the proxy route
+		const response = await customFetch(PROXY_API_URL)
 		if (!response.ok) {
 			const errorData = await response.text()
-			const errorMessage = `HTTP error! Status: ${response.status}\nURL: ${MOVIES_JSON_URL}\nResponse: ${errorData}`
+			const errorMessage = `HTTP error! Status: ${response.status}\nURL: ${PROXY_API_URL}\nResponse: ${errorData}`
 			console.error(errorMessage)
 			throw new Error(errorMessage)
 		}
 		const data = await response.json()
 		return organizeMovieData(data as Movie[])
 	} catch (error) {
-		const errorMessage = `Failed to fetch movies: ${error instanceof Error ? error.message : "Unknown error"}`
+		const errorMessage = `Failed to fetch movies: ${
+			error instanceof Error ? error.message : "Unknown error"
+		}\nAPI URL: ${PROXY_API_URL}`
 		console.error(errorMessage)
 		throw new Error(errorMessage)
 	}
@@ -29,9 +33,12 @@ function organizeMovieData(movies: Movie[]): Movie[] {
 		...movie,
 		palettes: movie.palettes
 			.sort((a, b) => {
-				if (!a.calculation_date) return 1;
-				if (!b.calculation_date) return -1;
-				return new Date(b.calculation_date).getTime() - new Date(a.calculation_date).getTime();
+				if (!a.calculation_date) return 1
+				if (!b.calculation_date) return -1
+				return (
+					new Date(b.calculation_date).getTime() -
+					new Date(a.calculation_date).getTime()
+				)
 			})
 			.map((palette) => ({
 				...palette,

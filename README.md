@@ -24,12 +24,6 @@ git clone https://github.com/adriencarpentier/movie-color-palettes.git
 bun install
 ```
 
-3. Create a `.env` file and set the `VITE_API_URL` environment variable to the URL of the API server.
-
-```env
-VITE_API_URL=http://localhost:3000/api
-```
-
 ## Development
 
 ```bash
