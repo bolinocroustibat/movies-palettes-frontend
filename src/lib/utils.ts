@@ -6,8 +6,11 @@ export function rgbToCSS(rgb: RGB): string {
 }
 
 export function formatDate(dateStr: string): string {
-	const date = new Date(dateStr.replace("_", " "))
-	return `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, "0")}/${String(date.getDate()).padStart(2, "0")}`
+	if (!dateStr) return '-'
+	// Convert "2024/11/28_21:33:16" to a valid date string
+	const normalizedDate = dateStr.replace('_', ' ').replace(/\//g, '-')
+	const date = new Date(normalizedDate)
+	return date.toLocaleString() // or any other format you prefer
 }
 
 export function rgbToHsl(rgb: RGB): [number, number, number] {

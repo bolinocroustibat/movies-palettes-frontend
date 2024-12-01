@@ -64,10 +64,10 @@ let isInfoVisible: boolean = $state(false)
 				{/if}
 			</p>
 			
-			<p class="text-neutral-500">Sat. factor</p>
+			<p class="text-neutral-500">Saturation factor</p>
 			<p class="text-neutral-400">{palette.saturation_factor || '-'}</p>
 			
-			<p class="text-neutral-500">Sat. threshold</p>
+			<p class="text-neutral-500">Sauration threshold</p>
 			<p class="text-neutral-400">{palette.saturation_threshold || '-'}</p>
 			
 			<p class="text-neutral-500">Frame skip</p>
