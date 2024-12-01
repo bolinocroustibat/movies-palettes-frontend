@@ -54,14 +54,31 @@ jobs:
       - name: Deploy to Server
         run: rsync -avz --checksum --exclude '.git' --delete ./build/ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:${{ secrets.SERVER_PATH }}
 
+      - name: Build with Bun and Vite
+        run: bun run build
+
+      - name: Setup SSH key
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Adding server to known hosts
+        shell: bash
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy to Server
+        run: rsync -avz --checksum --exclude '.git' --delete ./build/ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:${{ secrets.SERVER_PATH }}
+
       - name: Restart app with PM2
         run: |
           ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
             cd ${{ secrets.SERVER_PATH }}
-            # Install PM2 globally if not already installed
+            # Install PM2 locally if not already installed
             npm install pm2 --save
             # Restart the app with PM2 (or start if it's the first time)
-            pm2 start --interpreter /usr/local/bin/bun ./index.js --name movies-palettes || pm2 restart --interpreter /usr/local/bin/bun movies-palettes
+            pm2 start --interpreter /usr/local/bin/bun ./index.js --name movies-palettes --cwd ${{ secrets.SERVER_PATH }} || pm2 restart movies-palettes --interpreter /usr/local/bin/bun --cwd ${{ secrets.SERVER_PATH }}
             # Save the PM2 process list to enable it on server reboot
             pm2 save
           EOF
