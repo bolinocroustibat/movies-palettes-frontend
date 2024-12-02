@@ -6,9 +6,9 @@ export function rgbToCSS(rgb: RGB): string {
 }
 
 export function formatDate(dateStr: string): string {
-	if (!dateStr) return '-'
+	if (!dateStr) return "-"
 	// Convert "2024/11/28_21:33:16" to a valid date string
-	const normalizedDate = dateStr.replace('_', ' ').replace(/\//g, '-')
+	const normalizedDate = dateStr.replace("_", " ").replace(/\//g, "-")
 	const date = new Date(normalizedDate)
 	return date.toLocaleString() // or any other format you prefer
 }
