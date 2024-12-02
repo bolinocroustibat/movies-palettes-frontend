@@ -12,37 +12,23 @@ Goes hand in hand with the [movies-palettes](https://github.com/adriencarpentier
 - **Language**: TypeScript
 - **Deployment**: GitHub Actions with automatic versioning
 
-## Installation
+## Run locally
 
-1. Clone the repository:
-```bash
-git clone https://github.com/adriencarpentier/movie-color-palettes.git
-```
-
-2. Install dependencies:
 ```bash
 bun install
 ```
-
-3. Create a `.env` file and set the `VITE_API_URL` environment variable to the URL of the API server.
-
-```env
-VITE_API_URL=http://localhost:3000/api
-```
-
-## Development
 
 ```bash
 bun run dev
 ```
 
-## Deployment
+## Build
 
 ```bash
 bun run build
 ```
 
-## Preview the prod build
+Preview the prod build with:
 
 ```bash
 bun run preview
