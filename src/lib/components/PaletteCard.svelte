@@ -6,7 +6,8 @@ interface Props {
 	palette: Palette
 }
 const { palette }: Props = $props()
-const isInfoVisible: boolean = $state(false)
+// biome-ignore lint/style/useConst: falsely think this is a constant
+let isInfoVisible: boolean = $state(false)
 </script>
 
 <div class="bg-neutral-900 rounded-lg shadow-lg p-4 hover:shadow-xl transition-shadow border border-neutral-800 shrink-0 w-[220px]">
