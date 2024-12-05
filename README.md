@@ -33,3 +33,16 @@ Preview the prod build with:
 ```bash
 bun run preview
 ```
+
+## Check types, lint, format code
+
+Check types with:
+```bash
+bunx svelte-check
+```
+
+Lint and format code with:
+
+```bash
+biome check --write src/.
+```

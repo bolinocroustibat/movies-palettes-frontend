@@ -17,7 +17,7 @@ let isInfoVisible: boolean = $state(false)
 				class="flex-1"
 				style:background-color={rgbToCSS(color)}
 				title={rgbToCSS(color)}
-			/>
+			></div>
 		{/each}
 	</div>
 	
