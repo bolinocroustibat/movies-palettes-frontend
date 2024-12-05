@@ -48,6 +48,8 @@ jobs:
           wget -O ./src/data/movies_palettes.json "${{ secrets.MOVIES_JSON_URL}}"
 
       - name: Build with Bun and Vite
+        env:
+          NODE_ENV: production
         run: bun run build
 
       - name: Upload Build Artifacts
