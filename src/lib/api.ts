@@ -5,7 +5,7 @@ export async function fetchMovies(): Promise<Movie[]> {
 	try {
 		// Dynamically import the local JSON file
 		const data = await import("../data/movies_palettes.json")
-		return organizeMovieData(data.default as Movie[])
+		return organizeMovieData(data.default.movies as Movie[])
 	} catch (error) {
 		const errorMessage = `Failed to fetch movies: ${error instanceof Error ? error.message : "Unknown error"}`
 		console.error(errorMessage)
