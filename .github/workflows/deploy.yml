@@ -38,12 +38,20 @@ jobs:
         with:
           ref: ${{ needs.update-changelog.outputs.commit_hash }} # https://schnerring.net/blog/checking-out-code-committed-within-the-same-github-actions-workflow-run/
 
+      - name: Cache Bun dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
+
       - name: Install Bun
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
 
-      - name: Install Dependencies
+      - name: Install dependencies with Bun
         run: bun install --frozen-lockfile
 
       - name: Download latest movies data file
