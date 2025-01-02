@@ -65,8 +65,8 @@ let isInfoVisible: boolean = $state(false)
 				{/if}
 			</p>
 
-			<p class="text-neutral-500">Method</p>
-			<p class="text-neutral-400">{palette.method || '-'}</p>
+			<p class="text-neutral-500">Clustering Method</p>
+			<p class="text-neutral-400">{palette.clustering_method || '-'}</p>
 
 			<p class="text-neutral-500">Saturation factor</p>
 			<p class="text-neutral-400">{palette.saturation_factor || '-'}</p>

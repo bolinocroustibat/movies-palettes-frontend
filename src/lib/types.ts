@@ -7,7 +7,7 @@ interface Palette {
 	calculation_duration_seconds?: number
 	colors: RGB[]
 	resize: number | { width: number; height: number }
-	method?: string
+	clustering_method?: string
 	saturation_factor?: number
 	saturation_threshold?: number
 	frame_skip: number
