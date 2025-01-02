@@ -8,16 +8,9 @@ export const load: PageLoad = async ({ fetch }) => {
 	console.log(appVersion)
 	try {
 		const movies = await fetchMovies(fetch)
-		if (!movies || !Array.isArray(movies)) {
-			throw new Error(`Invalid movies data received: ${JSON.stringify(movies)}`)
-		}
 		return { movies }
 	} catch (e) {
-		// Add debug logging in catch block
-		console.error("Movie loading error:", {
-			error: e,
-			data: await fetchMovies(fetch).catch(() => "failed to fetch again"),
-		})
+		console.error("Movie loading error:", e)
 
 		if (e instanceof Response) {
 			throw error(e.status, {

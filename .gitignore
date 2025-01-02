@@ -49,4 +49,4 @@ nginx/
 !.env.example
 
 # Project specific
-**/data/*.json
+**/static/*.json
