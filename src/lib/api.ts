@@ -2,7 +2,9 @@ import type { Movie } from "./types"
 import { sortColorsByProximity } from "./utils"
 
 export async function fetchMovies(): Promise<Movie[]> {
-	const response = await fetch("movies_palettes.json")
+	const response = await fetch(
+		"https://adriencarpentier.com/movies-palettes/movies_palettes.json",
+	)
 	if (!response.ok) {
 		throw new Response(`HTTP error! status: ${response.status}`, {
 			status: response.status,
