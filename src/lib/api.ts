@@ -22,10 +22,11 @@ export async function fetchMovies(): Promise<Movie[]> {
 function organizeMovieData(movies: Movie[]): Movie[] {
 	return movies.map((movie) => ({
 		...movie,
-		palettes: movie.palettes
+		// Ensure palettes exists and is an array
+		palettes: (movie.palettes || [])
 			.sort((a, b) => {
-				if (!a.calculation_date) return 1
-				if (!b.calculation_date) return -1
+				if (!a?.calculation_date) return 1
+				if (!b?.calculation_date) return -1
 				return (
 					new Date(b.calculation_date).getTime() -
 					new Date(a.calculation_date).getTime()
@@ -33,7 +34,8 @@ function organizeMovieData(movies: Movie[]): Movie[] {
 			})
 			.map((palette) => ({
 				...palette,
-				colors: sortColorsByProximity(palette.colors),
+				// Ensure colors exists and is an array
+				colors: palette?.colors ? sortColorsByProximity(palette.colors) : [],
 			})),
 	}))
 }
