@@ -64,19 +64,22 @@ let isInfoVisible: boolean = $state(false)
 					-
 				{/if}
 			</p>
-			
+
+			<p class="text-neutral-500">Method</p>
+			<p class="text-neutral-400">{palette.method || '-'}</p>
+
 			<p class="text-neutral-500">Saturation factor</p>
 			<p class="text-neutral-400">{palette.saturation_factor || '-'}</p>
 			
-			<p class="text-neutral-500">Sauration threshold</p>
+			<p class="text-neutral-500">Saturation threshold</p>
 			<p class="text-neutral-400">{palette.saturation_threshold || '-'}</p>
-			
+
 			<p class="text-neutral-500">Frame skip</p>
 			<p class="text-neutral-400">{palette.frame_skip}</p>
 			
 			<p class="text-neutral-500">Batch size</p>
 			<p class="text-neutral-400">{palette.batch_size}</p>
-			
+
 			<p class="text-neutral-500">Runtime type</p>
 			<p class="text-neutral-400">{palette.runtime || '-'}</p>
 		</div>
