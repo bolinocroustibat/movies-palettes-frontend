@@ -10,13 +10,15 @@ export const load: PageLoad = async ({ fetch }) => {
 		const movies = await fetchMovies(fetch)
 		return { movies }
 	} catch (e) {
+		console.error("Movie loading error:", e)
+
 		if (e instanceof Response) {
 			throw error(e.status, {
 				message: `API Error (${e.status}): ${e.statusText}
 					The server returned an error while fetching movies.`,
 			})
 		}
-		// Handle other unexpected errors
+
 		const errorMessage =
 			e instanceof Error ? e.message : "Unknown error occurred"
 		throw error(500, {
