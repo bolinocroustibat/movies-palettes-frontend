@@ -6,26 +6,47 @@ interface Props {
 	movie: Movie
 }
 const { movie }: Props = $props()
+let isExpanded = $state(false)
+
+const latestPalette = $derived(
+	movie.palettes.reduce((latest, current) => {
+		if (!latest.calculation_date || !current.calculation_date) return current
+		return new Date(current.calculation_date) >
+			new Date(latest.calculation_date)
+			? current
+			: latest
+	}),
+)
 </script>
 
-<div class="bg-neutral-900/50 rounded-xl p-6 border border-neutral-800">
-	<div class="mb-6">
-		<h2 class="text-2xl font-semibold text-neutral-200/90 tracking-tight">
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<div 
+	class="bg-[#0C1829] rounded-xl p-6 border border-neutral-800 cursor-pointer transition-all duration-300 shadow-lg hover:shadow-xl"
+	class:w-[292px]={!isExpanded || movie.palettes.length === 1}
+	class:w-auto={isExpanded && movie.palettes.length > 1}
+	onclick={() => isExpanded = !isExpanded}
+>
+	<div class="h-[100px] mb-6 overflow-hidden">
+		<h2 class="text-2xl font-semibold text-neutral-200/90 tracking-tight line-clamp-2 font-windsor">
 			{movie.title}
 		</h2>
-		<div class="text-sm font-light text-neutral-400 mt-2 space-y-0.5">
+		<div class="text-sm font-light text-neutral-400 mt-2 flex gap-2">
 			{#if movie.director}
-				<p>Director: {movie.director}</p>
+				<p>{movie.director}{#if movie.year}, {/if}</p>
 			{/if}
 			{#if movie.year}
-				<p>Year: {movie.year}</p>
+				<p>{movie.year}</p>
 			{/if}
 		</div>
 	</div>
 
-	<div class="flex flex-nowrap gap-4 overflow-x-auto pb-4 scrollbar-thin scrollbar-track-neutral-800 scrollbar-thumb-neutral-600 hover:scrollbar-thumb-neutral-500 transition-colors">
-		{#each movie.palettes as palette}
-			<PaletteCard {palette} />
-		{/each}
+	<div class="flex flex-wrap justify-center" class:gap-6={isExpanded}>
+		<PaletteCard palette={latestPalette} {isExpanded} />
+		{#if isExpanded && movie.palettes.length > 1}
+			{#each movie.palettes.filter(p => p.id !== latestPalette.id) as palette}
+				<PaletteCard palette={palette} isExpanded={true} />
+			{/each}
+		{/if}
 	</div>
 </div> 

@@ -4,14 +4,13 @@ import { formatDate, rgbToCSS } from "$lib/utils"
 
 interface Props {
 	palette: Palette
+	isExpanded: boolean
 }
-const { palette }: Props = $props()
-// biome-ignore lint/style/useConst: falsely think this is a constant
-let isInfoVisible: boolean = $state(false)
+const { palette, isExpanded }: Props = $props()
 </script>
 
-<div class="bg-neutral-900 rounded-lg shadow-lg p-4 hover:shadow-xl transition-shadow border border-neutral-800 shrink-0 w-[220px]">
-	<div class="flex flex-col h-36 rounded-md overflow-hidden mb-3">
+<div class="bg-neutral-900 rounded-lg shadow-lg hover:shadow-xl transition-shadow border border-neutral-800 w-[220px]">
+	<div class="flex flex-col h-44 rounded-lg overflow-hidden">
 		{#each palette.colors as color}
 			<div
 				class="flex-1"
@@ -20,16 +19,9 @@ let isInfoVisible: boolean = $state(false)
 			></div>
 		{/each}
 	</div>
-	
-	<button 
-		class="w-full text-neutral-500 hover:text-neutral-400 text-sm mb-2"
-		onclick={() => isInfoVisible = !isInfoVisible}
-	>
-		{isInfoVisible ? 'Hide Details ▼' : 'Show Details ▶'}
-	</button>
 
-	{#if isInfoVisible}
-		<div class="grid grid-cols-2 gap-x-3 gap-y-0.5 text-sm font-light">
+	{#if isExpanded}
+		<div class="px-4 py-4 grid grid-cols-2 gap-x-3 gap-y-0.5 text-sm font-light">
 			<p class="text-neutral-500">ID</p>
 			<p class="text-neutral-400">{palette.id}</p>
 			
