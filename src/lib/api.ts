@@ -1,10 +1,10 @@
 import type { Movie } from "./types"
 import { sortColorsByProximity } from "./utils"
 
+const MOVIES_PALETTES_SOURCE = import.meta.env.VITE_MOVIES_PALETTES_SOURCE
+
 export async function fetchMovies(): Promise<Movie[]> {
-	const response = await fetch(
-		"https://adriencarpentier.com/movies-palettes/movies_palettes.json",
-	)
+	const response = await fetch(MOVIES_PALETTES_SOURCE)
 	if (!response.ok) {
 		throw new Response(`HTTP error! status: ${response.status}`, {
 			status: response.status,
