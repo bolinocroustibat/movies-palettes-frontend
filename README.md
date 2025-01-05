@@ -5,7 +5,7 @@ Goes hand in hand with the [movies-palettes](https://github.com/adriencarpentier
 
 ## Dependencies
 
-- Bun 1.0.x or higher
+- [Deno](https://docs.deno.com/runtime/getting_started/installation/) 2.x or higher
 - **Framework**: SvelteKit 2.x with Svelte 5
 - **Styling**: TailwindCSS with custom configuration
 - **Build Tool**: Vite
@@ -15,42 +15,41 @@ Goes hand in hand with the [movies-palettes](https://github.com/adriencarpentier
 ## Run locally
 
 ```bash
-bun install
+deno install
 ```
 
 ```bash
-bun run dev
+deno task dev
 ```
 
 ## Build
 
 ```bash
-bun run build
+deno task build
 ```
 
 Preview the prod build with:
 
 ```bash
-bun run preview
+deno task preview
 ```
 
 ## Check types, lint, format code
 
 To lint and format the code:
+
 ```bash
-biome check --write src/.
-```
-or
-```bash
-bun run check
+deno fmt --check
+deno lint
 ```
 
 For type checking and Svelte-specific validations:
-```bash
-bun run svelte-check
-```
-This will check for TypeScript errors, unused CSS, accessibility issues, and other Svelte-specific warnings.
 
+```bash
+deno task check
+```
+
+This will check for TypeScript errors, unused CSS, accessibility issues, and other Svelte-specific warnings.
 
 ## LLM-assisted development for Svelte 5
 
