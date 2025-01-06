@@ -15,6 +15,7 @@ let hoveredColor: string | null = null;
 <div class="bg-neutral-900 rounded-lg shadow-lg hover:shadow-xl transition-shadow border border-neutral-800 w-[220px]">
 	<div class="flex flex-col h-44 rounded-lg overflow-hidden">
 		{#each palette.colors as color}
+			<!-- svelte-ignore a11y_no_static_element_interactions -->
 			<div
 				class="flex-1 relative group"
 				style:background-color={rgbToCSS(color)}
