@@ -1,11 +1,13 @@
 <script lang="ts">
-import MovieCard from "$lib/components/MovieCard.svelte"
 import type { PageData } from "./$types"
+import MovieCard from "./MovieCard.svelte"
 
-export let data: PageData
+const { data }: { data: PageData } = $props()
 
-$: validMovies = data.movies.filter(
-	(movie) => movie.status === "Movie file found" && movie.palettes.length > 0,
+const validMovies = $derived(
+	data.movies.filter(
+		(movie) => movie.status === "Movie file found" && movie.palettes.length > 0,
+	),
 )
 </script>
 
