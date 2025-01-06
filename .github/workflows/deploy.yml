@@ -65,6 +65,7 @@ jobs:
       - name: Build with Deno and Vite
         env:
           VITE_ENV: production
+          VITE_API_JSON_URL: "https://adriencarpentier.com/movies-palettes/movies_palettes.json"
         run: deno task build
 
       - name: Setup SSH key
