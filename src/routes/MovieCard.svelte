@@ -11,8 +11,7 @@ let isExpanded = $state(false)
 const latestPalette = $derived(
 	movie.palettes.reduce((latest, current) => {
 		if (!latest.calculation_date || !current.calculation_date) return current
-		return new Date(current.calculation_date) >
-			new Date(latest.calculation_date)
+		return new Date(current.calculation_date) > new Date(latest.calculation_date)
 			? current
 			: latest
 	}),
@@ -22,13 +21,13 @@ const latestPalette = $derived(
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div 
-	class="bg-[#0C1829] rounded-xl p-6 border border-neutral-800 cursor-pointer transition-all duration-300 shadow-lg hover:shadow-xl"
+	class="bg-neutral-900/80 rounded-xl p-6 border border-neutral-800 cursor-pointer shadow-lg hover:shadow-xl hover:border-neutral-700 transition-[width,transform,opacity] duration-500 ease-in-out"
 	class:w-[292px]={!isExpanded || movie.palettes.length === 1}
 	class:w-auto={isExpanded && movie.palettes.length > 1}
 	onclick={() => isExpanded = !isExpanded}
 >
 	<div class="h-[100px] mb-6 overflow-hidden">
-		<h2 class="text-2xl font-semibold text-neutral-200/90 tracking-tight line-clamp-2 font-windsor">
+		<h2 class="text-2xl font-semibold text-neutral-200 tracking-tight line-clamp-2 font-windsor">
 			{movie.title}
 		</h2>
 		<div class="text-sm font-light text-neutral-400 mt-2 flex gap-2">
@@ -41,7 +40,8 @@ const latestPalette = $derived(
 		</div>
 	</div>
 
-	<div class="flex flex-wrap justify-center" class:gap-6={isExpanded}>
+	<div class="flex flex-row flex-wrap transition-all duration-500 ease-in-out"
+		 style:gap={isExpanded ? '1.5rem' : '0'}>
 		<PaletteCard palette={latestPalette} {isExpanded} />
 		{#if isExpanded && movie.palettes.length > 1}
 			{#each movie.palettes.filter(p => p.id !== latestPalette.id) as palette}
