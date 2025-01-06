@@ -2,9 +2,15 @@ import { fetchMovies } from "$lib/api"
 import { error } from "@sveltejs/kit"
 import type { PageLoad } from "./$types"
 
+export const prerender = true
+
+export const ssr = false
+
 const appVersion: string = __APP_VERSION__
 
-export const load: PageLoad = async ({ fetch }) => {
+export const load: PageLoad = async ({
+	fetch,
+}: { fetch: typeof globalThis.fetch }) => {
 	console.log(appVersion)
 	try {
 		const movies = await fetchMovies(fetch)

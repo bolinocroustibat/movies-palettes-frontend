@@ -1,6 +1,7 @@
 <script lang="ts">
 import type { PageData } from "./$types"
 import MovieCard from "./MovieCard.svelte"
+import "../app.css"
 
 const { data }: { data: PageData } = $props()
 
