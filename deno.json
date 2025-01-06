@@ -4,5 +4,9 @@
 		"lineWidth": 100,
 		"semiColons": false
 	},
+	"imports": {
+		"$lib/": "./src/lib/",
+		"$routes/": "./src/routes/"
+	},
 	"unstable": ["sloppy-imports"]
 }

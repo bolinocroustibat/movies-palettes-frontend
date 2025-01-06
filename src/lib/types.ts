@@ -1,6 +1,6 @@
-type RGB = [number, number, number]
+export type RGB = [number, number, number]
 
-interface Palette {
+export interface Palette {
 	id: string
 	clusters_nb: number
 	calculation_date?: string
@@ -15,7 +15,7 @@ interface Palette {
 	runtime?: string
 }
 
-interface Movie {
+export interface Movie {
 	title: string
 	status: string
 	director: string | null
@@ -25,5 +25,3 @@ interface Movie {
 	frames: number
 	length: number
 }
-
-export type { RGB, Palette, Movie }
