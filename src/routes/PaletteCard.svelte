@@ -15,7 +15,7 @@ const { palette, isExpanded }: Props = $props()
 			<div
 				class="flex-1"
 				style:background-color={rgbToCSS(color)}
-			/>
+			></div>
 		{/each}
 	</div>
 

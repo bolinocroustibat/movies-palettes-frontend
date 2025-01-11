@@ -1,15 +1,15 @@
 <script lang="ts">
-import "../app.css";
+import "../app.css"
 import type { PageData } from "./$types"
+import BackToTop from "./BackToTop.svelte"
 import MovieCard from "./MovieCard.svelte"
-import BackToTop from './BackToTop.svelte'
 
-let { data } = $props<{ data: PageData }>();
-const { movies } = data;
+const { data } = $props<{ data: PageData }>()
+const { movies } = data
 
 const validMovies = $derived(
-	movies.filter((movie) => movie.palettes.length > 0)
-);
+	movies.filter((movie) => movie.palettes.length > 0),
+)
 </script>
 
 <div class="min-h-screen bg-gradient-to-b from-neutral-950 via-neutral-950 to-neutral-900/95 py-12">

@@ -12,7 +12,8 @@ const latestPalette = $derived(
 	movie.palettes.reduce((latest, current) => {
 		if (!current.calculation_date) return latest
 		if (!latest.calculation_date) return current
-		return new Date(current.calculation_date) > new Date(latest.calculation_date)
+		return new Date(current.calculation_date) >
+			new Date(latest.calculation_date)
 			? current
 			: latest
 	}),

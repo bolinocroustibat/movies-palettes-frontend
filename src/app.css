@@ -3,9 +3,9 @@
 @tailwind utilities;
 
 @font-face {
-	font-family: 'Windsor';
-	src: url('/fonts/windsor-light.woff2') format('woff2'),
-		url('/fonts/windsor-light.woff') format('woff');
+	font-family: "Windsor";
+	src: url("/fonts/windsor-light.woff2") format("woff2"),
+		url("/fonts/windsor-light.woff") format("woff");
 	font-weight: 300;
 	font-style: normal;
 	font-display: swap;
@@ -13,11 +13,11 @@
 
 @layer base {
 	html {
-		font-family: 'Work Sans', sans-serif;
+		font-family: "Work Sans", sans-serif;
 		scroll-behavior: smooth;
 	}
 
 	.font-windsor {
-		font-family: 'Windsor', serif;
+		font-family: "Windsor", serif;
 	}
 }
