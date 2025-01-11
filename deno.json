@@ -6,7 +6,8 @@
 	},
 	"imports": {
 		"$lib/": "./src/lib/",
-		"$routes/": "./src/routes/"
+		"$routes/": "./src/routes/",
+		"@db/sqlite": "jsr:@db/sqlite@^0.12.0"
 	},
 	"unstable": ["sloppy-imports"]
 }

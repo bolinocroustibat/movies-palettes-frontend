@@ -6,7 +6,8 @@ export interface Palette {
 	calculation_date?: string
 	calculation_duration_seconds?: number
 	colors: RGB[]
-	resize: number | { width: number; height: number }
+	resize_width: number
+	resize_height: number
 	clustering_method?: string
 	saturation_factor?: number
 	saturation_threshold?: number

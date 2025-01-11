@@ -47,10 +47,8 @@ const { palette, isExpanded }: Props = $props()
 			
 			<p class="text-neutral-500">Resolution</p>
 			<p class="text-neutral-400">
-				{#if typeof palette.resize === 'object'}
-					{palette.resize.width}×{palette.resize.height}
-				{:else if palette.resize}
-					{palette.resize}×{palette.resize}
+				{#if palette.resize_width && palette.resize_height}
+					{palette.resize_width}×{palette.resize_height}
 				{:else}
 					-
 				{/if}
