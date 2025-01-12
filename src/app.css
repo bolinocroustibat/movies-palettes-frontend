@@ -4,9 +4,10 @@
 
 @font-face {
 	font-family: "Windsor";
-	src: url("/fonts/windsor-light.woff2") format("woff2"),
-		url("/fonts/windsor-light.woff") format("woff");
-	font-weight: 300;
+	src: url("/fonts/windsor-light.woff") format("woff"),
+		/* Fallback for older browsers */
+		url("/fonts/windsor-light.otf") format("opentype");
+	/* Final fallback */ font-weight: 300;
 	font-style: normal;
 	font-display: swap;
 }
