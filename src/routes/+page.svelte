@@ -1,13 +1,14 @@
 <script lang="ts">
-import "../app.css";
+import "../app.css"
 import type { PageData } from "./$types"
+import BackToTop from "./BackToTop.svelte"
 import MovieCard from "./MovieCard.svelte"
-import BackToTop from './BackToTop.svelte'
 
-const { data }: { data: PageData } = $props()
+const { data } = $props<{ data: PageData }>()
+const { movies } = data
 
 const validMovies = $derived(
-	data.movies.filter((movie) => movie.palettes.length > 0),
+	movies.filter((movie) => movie.palettes.length > 0),
 )
 </script>
 
