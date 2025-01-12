@@ -22,7 +22,7 @@ jobs:
         run: |
           ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "\
             mkdir -p ${{ secrets.SERVER_PATH }} \
-            && wget -O ${{ secrets.SERVER_PATH }}/movies_palettes.json '${{ vars.MOVIES_JSON_URL }}' \
-            && touch -m ${{ secrets.SERVER_PATH }}/movies_palettes.json \
-            && echo 'Number of movies: '\$(jq -r '.movies | length' ${{ secrets.SERVER_PATH }}/movies_palettes.json) \
-            && echo 'Last updated: '\$(jq .last_updated ${{ secrets.SERVER_PATH }}/movies_palettes.json)"
+            && wget -O ${{ secrets.SERVER_PATH }}/movies.sqlite '${{ vars.MOVIES_SQLITE_URL }}' \
+            && touch -m ${{ secrets.SERVER_PATH }}/movies.sqlite \
+            && echo 'Number of movies: '\$(jq -r '.movies | length' ${{ secrets.SERVER_PATH }}/movies.sqlite) \
+            && echo 'Last updated: '\$(jq .last_updated ${{ secrets.SERVER_PATH }}/movies.sqlite)"

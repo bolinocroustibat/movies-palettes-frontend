@@ -52,21 +52,31 @@ jobs:
       - name: Install dependencies with Bun
         run: bun install --frozen-lockfile
 
-      - name: Download movies data to static directory
+      - name: Download movies DB to static directory
         run: |
           mkdir -p static
-          wget -O static/movies_palettes.json '${{ vars.MOVIES_JSON_URL }}'
+          wget -O static/movie.db '${{ vars.MOVIES_SQLITE_URL }}'
 
-      - name: Test movies data
-        run: |
-          echo "Number of movies: $(jq -r '.movies | length' static/movies_palettes.json)"
-          echo "Last updated: $(jq .last_updated static/movies_palettes.json)"
-
-      - name: Build with Bun and Vite
+      - name: Build with Bun and SvelteKit
         env:
           VITE_ENV: production
           VITE_DB_PATH: "https://adriencarpentier.com/movies-palettes/movies.db"
-        run: bun task build
+        run: |
+          bun run build
+          mkdir -p build
+          cp -r build package.json bun.lockb .env* build/
+          cp -r static build/
+
+      - name: Create deployment script
+        run: |
+          cat << 'EOF' > build/deploy.sh
+          #!/bin/bash
+          cd "$(dirname "$0")"
+          bun install --frozen-lockfile
+          pm2 delete movies-palettes || true
+          pm2 start index.js --interpreter ~/.bun/bin/bun --name movies-palettes
+          EOF
+          chmod +x build/deploy.sh
 
       - name: Setup SSH key
         uses: webfactory/ssh-agent@v0.9.0
@@ -80,4 +90,6 @@ jobs:
           ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
 
       - name: Deploy to Server
-        run: rsync -avz --checksum --exclude '.git' --delete ./build/ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:${{ secrets.SERVER_PATH }}
+        run: |
+          rsync -avz --checksum --exclude '.git' --delete ./build/ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:${{ secrets.SERVER_PATH }}
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "cd ${{ secrets.SERVER_PATH }} && ./deploy.sh"
