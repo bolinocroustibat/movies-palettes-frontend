@@ -2,7 +2,7 @@ import { Database } from "bun:sqlite"
 import { sortColorsByProximity } from "$lib/utils"
 import type { PageServerLoad } from "./$types"
 
-const DB_PATH = process.env.VITE_DB_PATH
+const DB_PATH = "./static/movies.db"
 
 export const load: PageServerLoad = async () => {
 	const db = new Database(DB_PATH, { readonly: true })

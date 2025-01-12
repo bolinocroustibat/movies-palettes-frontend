@@ -18,11 +18,10 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Download and test movies data on server
+      - name: Download movies DB to static directory
         run: |
-          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "\
-            mkdir -p ${{ secrets.SERVER_PATH }} \
-            && wget -O ${{ secrets.SERVER_PATH }}/movies.sqlite '${{ vars.MOVIES_SQLITE_URL }}' \
-            && touch -m ${{ secrets.SERVER_PATH }}/movies.sqlite \
-            && echo 'Number of movies: '\$(jq -r '.movies | length' ${{ secrets.SERVER_PATH }}/movies.sqlite) \
-            && echo 'Last updated: '\$(jq .last_updated ${{ secrets.SERVER_PATH }}/movies.sqlite)"
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "wget -O ${{ secrets.SERVER_PATH }}/static/movies.db '${{ vars.MOVIES_SQLITE_URL }}'"
+
+      - name: Test if the downloaded file is a valid SQLite database
+        run: |
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "cd ${{ secrets.SERVER_PATH }} && bun -e 'try { const { Database } = require(\"bun:sqlite\"); const db = new Database(\"${{ secrets.SERVER_PATH }}/static/movies.db\", { readonly: true }); const count = db.query(\"SELECT COUNT(*) as count FROM movies\").get().count; console.log(\"Database OK:\", count, \"movies found\"); process.exit(0); } catch (e) { console.error(\"Invalid database file:\", e); process.exit(1); }'"

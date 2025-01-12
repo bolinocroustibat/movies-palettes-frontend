@@ -16,6 +16,14 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      - name: Cache Bun dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
+
       - name: Bump version in package.json to ${{ github.ref_name }}
         run: sed -E -i 's/"version":[[:space:]]"[0-9]+.[0-9]+.[0-9]+"/"version":\ "${{ github.ref_name }}"/g' ./package.json
 
@@ -36,14 +44,6 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Cache Bun dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.bun/install/cache
-          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
-          restore-keys: |
-            ${{ runner.os }}-bun-
-
       - name: Install Bun
         uses: oven-sh/setup-bun@v2
         with:
@@ -55,26 +55,46 @@ jobs:
       - name: Download movies DB to static directory
         run: |
           mkdir -p static
-          wget -O static/movie.db '${{ vars.MOVIES_SQLITE_URL }}'
+          wget -O static/movies.db '${{ vars.MOVIES_SQLITE_URL }}'
 
-      - name: Build with Bun and SvelteKit
+      - name: Build with Bun
         env:
           VITE_ENV: production
-          VITE_DB_PATH: "https://adriencarpentier.com/movies-palettes/movies.db"
         run: |
           bun run build
-          mkdir -p build
-          cp -r build package.json bun.lockb .env* build/
+          cp -r package.json bun.lockb build/
           cp -r static build/
 
       - name: Create deployment script
         run: |
           cat << 'EOF' > build/deploy.sh
           #!/bin/bash
+          set -e  # Exit on error
           cd "$(dirname "$0")"
-          bun install --frozen-lockfile
+
+          echo "Starting with PM2..."
           pm2 delete movies-palettes || true
-          pm2 start index.js --interpreter ~/.bun/bin/bun --name movies-palettes
+
+          # Start PM2 with Bun
+          pm2 start index.js \
+            --name movies-palettes \
+            --env production \
+            --interpreter bun \
+            --merge-logs \
+            --log ./movies-palettes.log \
+            --time \
+            -- --port 3000
+
+          # Wait for the process to stabilize
+          sleep 1
+
+          if ! curl -s -f http://localhost:3000/; then
+            echo "Server failed to respond"
+            pm2 logs movies-palettes --lines 20
+            exit 1
+          fi
+
+          echo "Server is running!"
           EOF
           chmod +x build/deploy.sh
 
@@ -92,4 +112,11 @@ jobs:
       - name: Deploy to Server
         run: |
           rsync -avz --checksum --exclude '.git' --delete ./build/ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:${{ secrets.SERVER_PATH }}
-          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "cd ${{ secrets.SERVER_PATH }} && ./deploy.sh"
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "${{ secrets.SERVER_PATH }}/deploy.sh"
+
+      - name: Test if deployed app responds
+        run: |
+          if ! ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "curl -s --retry 5 --retry-delay 2 http://localhost:3000 > /dev/null"; then
+            echo "Error: Deployed application is not responding"
+            exit 1
+          fi
