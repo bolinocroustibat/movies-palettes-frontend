@@ -24,7 +24,7 @@ const { palette, isExpanded }: Props = $props()
 			<p class="text-neutral-500">ID</p>
 			<p class="text-neutral-400">{palette.id}</p>
 			
-			<p class="text-neutral-500">Date</p>
+			<p class="text-neutral-500">Calculation date</p>
 			<p class="text-neutral-400">
 				{#if palette.calculation_date}
 					{formatDate(palette.calculation_date)}
@@ -33,7 +33,7 @@ const { palette, isExpanded }: Props = $props()
 				{/if}
 			</p>
 			
-			<p class="text-neutral-500">Duration</p>
+			<p class="text-neutral-500">Calculation duration</p>
 			<p class="text-neutral-400">
 				{#if palette.calculation_duration_seconds}
 					{Math.round(palette.calculation_duration_seconds)}s

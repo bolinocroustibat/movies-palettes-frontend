@@ -4,9 +4,10 @@ import PaletteCard from "./PaletteCard.svelte"
 
 interface Props {
 	movie: Movie
+	isExpanded: boolean
+	onToggle: () => void
 }
-const { movie }: Props = $props()
-let isExpanded = $state(false)
+const { movie, isExpanded, onToggle }: Props = $props()
 
 const latestPalette = $derived(
 	movie.palettes.reduce((latest, current) => {
@@ -28,7 +29,7 @@ const latestPalette = $derived(
 	class:w-auto={isExpanded && movie.palettes.length > 1}
 	class:scale-105={isExpanded}
 	class:z-10={isExpanded}
-	onclick={() => isExpanded = !isExpanded}
+	onclick={onToggle}
 >
 	<div class="h-[100px] mb-6 overflow-hidden">
 		<h2 class="text-2xl font-semibold text-neutral-200 tracking-tight line-clamp-2 font-windsor">
@@ -44,7 +45,7 @@ const latestPalette = $derived(
 		</div>
 	</div>
 
-	<div class="flex flex-row flex-wrap transition-all duration-500 ease-in-out" style:gap={isExpanded ? '1.5rem' : '0'}>
+	<div class="flex flex-row flex-wrap justify-center transition-all duration-500 ease-in-out" style:gap={isExpanded ? '1.5rem' : '0'}>
 		<PaletteCard palette={latestPalette} {isExpanded} />
 		{#if isExpanded && movie.palettes.length > 1}
 			{#each movie.palettes.filter(p => p.id !== latestPalette.id) as palette}

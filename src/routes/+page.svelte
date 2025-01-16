@@ -7,6 +7,8 @@ import MovieCard from "./MovieCard.svelte"
 const { data } = $props<{ data: PageData }>()
 const { movies } = data
 
+let expandedMovieId = $state<string | null>(null)
+
 const validMovies = $derived(
 	movies.filter((movie) => movie.palettes.length > 0),
 )
@@ -31,7 +33,11 @@ const validMovies = $derived(
 					class="opacity-0"
 					style="animation: fade-in 0.5s ease-out forwards; animation-delay: {i * 150}ms"
 				>
-					<MovieCard {movie} />
+					<MovieCard 
+						{movie} 
+						isExpanded={expandedMovieId === movie.id}
+						onToggle={() => expandedMovieId = expandedMovieId === movie.id ? null : movie.id}
+					/>
 				</div>
 			{/each}
 		</div>
