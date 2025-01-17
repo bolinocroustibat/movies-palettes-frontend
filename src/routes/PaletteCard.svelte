@@ -1,6 +1,6 @@
 <script lang="ts">
 import type { Palette } from "$lib/types"
-import { formatDate, rgbToCSS } from "$lib/utils"
+import { formatDate, rgbToCSS, rgbToHex } from "$lib/utils"
 
 interface Props {
 	palette: Palette
@@ -13,9 +13,13 @@ const { palette, isExpanded }: Props = $props()
 	<div class="flex flex-col h-44 rounded-lg overflow-hidden">
 		{#each palette.colors as color}
 			<div
-				class="flex-1"
+				class="flex-1 relative group"
 				style:background-color={rgbToCSS(color)}
-			></div>
+			>
+				<div class="opacity-0 group-hover:opacity-100 absolute bottom-1 left-1/2 -translate-x-1/2 bg-black/75 text-white text-xs px-2 py-1 rounded transition-opacity">
+					{rgbToHex(color)}
+				</div>
+			</div>
 		{/each}
 	</div>
 

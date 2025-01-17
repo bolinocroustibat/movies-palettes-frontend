@@ -5,6 +5,10 @@ export function rgbToCSS(rgb: RGB): string {
 	return chroma(rgb).css()
 }
 
+export function rgbToHex(rgb: RGB): string {
+	return chroma(rgb).hex()
+}
+
 export function formatDate(dateStr: string): string {
 	if (!dateStr) return "-"
 	// Convert "2024/11/28_21:33:16" to a valid date string
