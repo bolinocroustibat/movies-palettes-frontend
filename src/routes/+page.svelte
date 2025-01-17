@@ -31,7 +31,7 @@ const validMovies = $derived(
 			{#each validMovies as movie, i}
 				<div 
 					class="opacity-0"
-					style="animation: fade-in 0.5s ease-out forwards; animation-delay: {i * 150}ms"
+					style="animation: fade-in 0.5s ease-out forwards; animation-delay: {i * 50}ms"
 				>
 					<MovieCard 
 						{movie} 
