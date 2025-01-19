@@ -1,28 +1,34 @@
 export type RGB = [number, number, number]
 
-export interface Palette {
-	id: string
-	clusters_nb: number
-	calculation_date?: string
-	calculation_duration_seconds?: number
-	colors: RGB[]
-	resize_width: number
-	resize_height: number
-	clustering_method?: string
-	saturation_factor?: number
-	saturation_threshold?: number
-	frame_skip: number
-	batch_size: number
-	runtime?: string
+export interface Movie {
+	id: number
+	title: string
+	type?: string
+	status?: string
+	path?: string
+	director?: string
+	year?: string
+	length?: number
+	frames?: number
+	added?: string // DATETIME field
+	palettes?: Palette[] // Virtual field for relationships
 }
 
-export interface Movie {
-	title: string
-	status: string
-	director: string | null
-	year: string | null
-	path: string | null
-	palettes: Palette[]
-	frames: number
-	length: number
+export interface Palette {
+	id: string
+	movie_id: number
+	active?: boolean
+	calculation_date?: string // DATETIME field
+	calculation_duration_seconds?: number
+	is_black_and_white?: boolean
+	colors: RGB[] // stored as text in DB, parsed as RGB[]
+	clusters_nb: number
+	frame_skip?: number
+	resize_width?: number
+	resize_height?: number
+	batch_size?: number
+	clustering_method: string
+	saturation_factor?: string
+	saturation_threshold?: number
+	runtime?: string
 }

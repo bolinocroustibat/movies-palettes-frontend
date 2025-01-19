@@ -13,35 +13,39 @@ Goes hand in hand with the [movies-palettes](https://github.com/adriencarpentier
 - **Language**: TypeScript
 - **Deployment**: GitHub Actions with automatic versioning
 
-## Database setup
+## Database schema
 
 ```sql
 CREATE TABLE "movies" (
 	"id" INTEGER PRIMARY KEY AUTOINCREMENT,
-	"title" VARCHAR NOT NULL UNIQUE,
+	"title" VARCHAR NOT NULL,
 	"type" VARCHAR,
 	"status" VARCHAR,
-	"path" VARCHAR,
+	"path" VARCHAR UNIQUE,
 	"director" VARCHAR,
 	"year" VARCHAR,
+	"length" INT,
+	"frames" INT,
 	"added" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE "palettes" (
 	"id" varchar NOT NULL,
 	"movie_id" int NOT NULL,
-	"clusters_nb" int NOT NULL,
+	"active" BOOLEAN DEFAULT TRUE,
 	"calculation_date" DATETIME DEFAULT CURRENT_TIMESTAMP,
 	"calculation_duration_seconds" REAL,
-	"runtime" varchar,
+	"is_black_and_white" BOOLEAN DEFAULT FALSE,
+	"colors" text NOT NULL,
+	"clusters_nb" int NOT NULL,
 	"frame_skip" int,
 	"resize_width" int,
 	"resize_height" int,
 	"batch_size" int,
-	"colors" text NOT NULL,
-	"clustering_method" varchar NOT NULL,
-	"is_black_and_white" BOOLEAN DEFAULT FALSE,
-	"length" int,
+	"clustering_method" varchar,
+	"saturation_factor" varchar,
+	"saturation_threshold" INT,
+	"runtime" varchar,
 	PRIMARY KEY (id)
 );
 ```

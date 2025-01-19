@@ -3,6 +3,7 @@ import "../app.css"
 import type { PageData } from "./$types"
 import BackToTop from "./BackToTop.svelte"
 import MovieCard from "./MovieCard.svelte"
+import type { Movie } from "$lib/types"
 
 const { data } = $props<{ data: PageData }>()
 const { movies } = data
@@ -10,7 +11,7 @@ const { movies } = data
 let expandedMovieId = $state<string | null>(null)
 
 const validMovies = $derived(
-	movies.filter((movie) => movie.palettes.length > 0),
+	movies.filter((movie: Movie) => movie.palettes && movie.palettes.length > 0),
 )
 </script>
 
