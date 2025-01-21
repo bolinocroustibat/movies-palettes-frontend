@@ -27,7 +27,7 @@ const validMovies = $derived(
 				class="text-violet-600/80 dark:text-violet-300/80 hover:text-violet-500/90 dark:hover:text-violet-200/90 transition-colors underline underline-offset-4 decoration-violet-400/30" 
 				target="_blank" 
 				rel="noopener noreferrer"
-			>this algorithm</a>
+			>this homemade algorithm</a>
 		</p>
 		<div class="flex flex-wrap gap-10 justify-center">
 			{#each validMovies as movie, i}
