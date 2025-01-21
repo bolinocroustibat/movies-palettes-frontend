@@ -1,7 +1,7 @@
 import { Database } from "bun:sqlite"
+import type { Movie, Palette } from "$lib/types"
 import { sortColorsByProximity } from "$lib/utils"
 import type { PageServerLoad } from "./$types"
-import type { Movie, Palette } from "$lib/types"
 
 const DB_PATH = "./static/movies.db"
 
@@ -9,10 +9,14 @@ export const load: PageServerLoad = async () => {
 	const db = new Database(DB_PATH, { readonly: true })
 	try {
 		const movies = db
-			.query<Movie>("SELECT id, title, director, year FROM movies ORDER BY title")
+			.query<Movie>(
+				"SELECT id, title, director, year FROM movies ORDER BY title",
+			)
 			.all()
 		const palettes = db
-			.query<Palette>("SELECT * FROM palettes WHERE active = 1 ORDER BY calculation_date DESC")
+			.query<Palette>(
+				"SELECT * FROM palettes WHERE active = 1 ORDER BY calculation_date DESC",
+			)
 			.all()
 
 		const palettesMap = new Map<number, Palette[]>()
