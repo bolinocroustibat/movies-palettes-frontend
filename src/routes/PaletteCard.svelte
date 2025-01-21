@@ -9,7 +9,7 @@ interface Props {
 const { palette, isExpanded }: Props = $props()
 </script>
 
-<div class="bg-neutral-900 rounded-lg shadow-lg hover:shadow-xl transition-shadow border border-neutral-800 w-[220px]">
+<div class="bg-neutral-900 rounded-lg shadow-lg hover:shadow-xl transition-shadow border border-neutral-700 w-[220px]">
 	<div class="flex flex-col h-44 rounded-lg overflow-hidden">
 		{#each palette.colors as color}
 			<div

@@ -1,9 +1,10 @@
 <script lang="ts">
 import "../app.css"
+import type { Movie } from "$lib/types"
 import type { PageData } from "./$types"
 import BackToTop from "./BackToTop.svelte"
 import MovieCard from "./MovieCard.svelte"
-import type { Movie } from "$lib/types"
+import ThemeToggle from "./ThemeToggle.svelte"
 
 const { data } = $props<{ data: PageData }>()
 const { movies } = data
@@ -15,15 +16,15 @@ const validMovies = $derived(
 )
 </script>
 
-<div class="min-h-screen bg-gradient-to-b from-neutral-950 via-neutral-950 to-neutral-900/95 py-12">
+<div class="min-h-screen bg-gradient-to-b from-white via-gray-50 to-gray-100/95 dark:from-neutral-950 dark:via-neutral-950 dark:to-neutral-900/95 py-12">
 	<div class="container mx-auto px-4 animate-fade-in">
-		<h1 class="text-5xl font-extrabold mb-4 text-center text-violet-300/90 font-windsor animate-slide-down">
+		<h1 class="text-5xl font-extrabold mb-4 text-center text-violet-600 dark:text-violet-300/90 font-windsor animate-slide-down">
 			Movie Color Palettes
 		</h1>
-		<p class="text-center text-neutral-400/80 text-sm tracking-wider mb-16 font-light">
+		<p class="text-center text-gray-600 dark:text-neutral-400/80 text-sm tracking-wider mb-16 font-light">
 			Generated using <a 
 				href="https://github.com/bolinocroustibat/movies-palettes/blob/main/movies_palettes.ipynb" 
-				class="text-violet-300/80 hover:text-violet-200/90 transition-colors underline underline-offset-4 decoration-violet-400/30" 
+				class="text-violet-600/80 dark:text-violet-300/80 hover:text-violet-500/90 dark:hover:text-violet-200/90 transition-colors underline underline-offset-4 decoration-violet-400/30" 
 				target="_blank" 
 				rel="noopener noreferrer"
 			>this algorithm</a>
@@ -45,4 +46,5 @@ const validMovies = $derived(
 	</div>
 </div>
 
+<ThemeToggle />
 <BackToTop />

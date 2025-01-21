@@ -24,7 +24,7 @@ const latestPalette = $derived(
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div 
-	class="bg-neutral-900/80 rounded-xl p-6 border border-neutral-800 cursor-pointer shadow-lg hover:shadow-xl hover:border-neutral-700 transition-[width,transform,opacity] duration-500 ease-in-out relative"
+	class="bg-white/80 dark:bg-neutral-900/80 rounded-xl p-6 border border-neutral-200 dark:border-neutral-800 cursor-pointer shadow-lg hover:shadow-xl hover:border-neutral-300 dark:hover:border-neutral-700 transition-[width,transform,opacity] duration-500 ease-in-out relative"
 	class:w-[292px]={!isExpanded || movie.palettes.length === 1}
 	class:w-auto={isExpanded && movie.palettes.length > 1}
 	class:scale-105={isExpanded}
@@ -32,7 +32,7 @@ const latestPalette = $derived(
 	onclick={onToggle}
 >
 	<div class="h-[100px] mb-6 overflow-hidden">
-		<h2 class="text-2xl font-semibold text-neutral-200 tracking-tight line-clamp-2 font-windsor">
+		<h2 class="text-2xl font-semibold text-neutral-800 dark:text-neutral-200 tracking-tight line-clamp-2 font-windsor">
 			{movie.title}
 		</h2>
 		<div class="text-sm font-light text-neutral-400 mt-2 flex gap-2">

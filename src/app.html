@@ -35,7 +35,12 @@
 
 		%sveltekit.head%
 	</head>
-	<body data-sveltekit-preload-data="hover">
+	<body data-sveltekit-preload-data="hover" class="dark">
 		<div style="display: contents">%sveltekit.body%</div>
+		<script>
+			// Initialize theme from localStorage
+			const theme = localStorage.getItem('theme') || 'dark';
+			document.body.className = theme;
+		</script>
 	</body>
 </html>

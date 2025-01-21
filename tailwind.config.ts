@@ -3,6 +3,7 @@ import type { Config } from "tailwindcss"
 
 export default {
 	content: ["./src/**/*.{html,js,svelte,ts}"],
+	darkMode: 'class',
 
 	theme: {
 		extend: {
@@ -40,6 +41,16 @@ export default {
 			animation: {
 				"fade-in": "fade-in 0.8s ease-out",
 				"slide-down": "slide-down 0.8s ease-out",
+			},
+			colors: {
+				'theme-bg': {
+					light: '#f3f4f6',
+					dark: '#09090b',
+				},
+				'theme-text': {
+					light: '#1f2937',
+					dark: '#d4d4d8',
+				}
 			},
 		},
 	},
