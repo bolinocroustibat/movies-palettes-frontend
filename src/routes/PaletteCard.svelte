@@ -17,7 +17,10 @@ const { palette, isExpanded }: Props = $props()
 				style:background-color={rgbToCSS(color)}
 			>
 				<div class="opacity-0 group-hover:opacity-100 absolute bottom-1 left-1/2 -translate-x-1/2 bg-black/75 text-white text-xs px-2 py-1 rounded transition-opacity">
-					{rgbToHex(color)}
+					{rgbToHex(color)}<br>
+					R: {color[0]}<br>
+					G: {color[1]}<br>
+					B: {color[2]}
 				</div>
 			</div>
 		{/each}
