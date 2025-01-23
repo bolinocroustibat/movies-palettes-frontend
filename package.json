@@ -17,14 +17,12 @@
 		"@steeze-ui/svelte-icon": "^1.6.2",
 		"@sveltejs/kit": "^2.16.0",
 		"@sveltejs/vite-plugin-svelte": "^4.0.4",
+		"@tailwindcss/vite": "^4.0.0",
 		"@types/chroma-js": "^2.4.5",
-		"autoprefixer": "^10.4.20",
 		"biome": "^0.3.3",
 		"svelte": "^5.19.0",
 		"svelte-adapter-bun": "^0.5.2",
 		"svelte-check": "^4.1.4",
-		"tailwind-scrollbar": "^3.1.0",
-		"tailwindcss": "^3.4.17",
 		"typescript": "^5.7.3",
 		"vite": "^6.0.10"
 	}

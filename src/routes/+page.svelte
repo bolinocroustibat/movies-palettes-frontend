@@ -16,7 +16,7 @@ const validMovies = $derived(
 )
 </script>
 
-<div class="min-h-screen bg-gradient-to-b from-white via-gray-50 to-gray-100/95 dark:from-neutral-950 dark:via-neutral-950 dark:to-neutral-900/95 py-12">
+<div class="min-h-screen bg-linear-to-b from-white via-gray-50 to-gray-100/95 dark:from-neutral-950 dark:via-neutral-950 dark:to-neutral-900/95 py-12">
 	<div class="container mx-auto px-4 animate-fade-in">
 		<h1 class="text-5xl font-extrabold mb-4 text-center text-violet-600 dark:text-violet-300/90 font-windsor animate-slide-down">
 			Movie Color Palettes
