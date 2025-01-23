@@ -9,6 +9,9 @@ import ThemeToggle from "./ThemeToggle.svelte"
 const { data } = $props<{ data: PageData }>()
 const { movies } = data
 
+// Log the version when the component initializes
+console.log("App version:", __APP_VERSION__)
+
 let expandedMovieId = $state<string | null>(null)
 
 const validMovies = $derived(

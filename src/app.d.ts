@@ -1,3 +1,5 @@
+/// <reference types="vite/client" />
+
 // See https://svelte.dev/docs/kit/types#app.d.ts
 // for information about these interfaces
 declare global {
@@ -9,6 +11,7 @@ declare global {
 			movies: import("./lib/types").Movie[]
 		}
 	}
+	const __APP_VERSION__: string;
 }
 
 export {}
