@@ -11,7 +11,7 @@ declare global {
 			movies: import("./lib/types").Movie[]
 		}
 	}
-	const __APP_VERSION__: string;
+	const __APP_VERSION__: string
 }
 
 export {}
