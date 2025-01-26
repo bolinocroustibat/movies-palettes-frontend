@@ -64,6 +64,9 @@ const { palette, isExpanded }: Props = $props()
 			<p class="text-neutral-500">Clustering method</p>
 			<p class="text-neutral-400">{palette.clustering_method || '-'}</p>
 
+			<p class="text-neutral-500">Color space</p>
+			<p class="text-neutral-400">{palette.color_space || '-'}</p>
+
 			<p class="text-neutral-500">Saturation factor</p>
 			<p class="text-neutral-400">{palette.saturation_factor || '-'}</p>
 			

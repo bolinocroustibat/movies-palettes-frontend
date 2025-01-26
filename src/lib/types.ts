@@ -28,6 +28,7 @@ export interface Palette {
 	resize_height?: number
 	batch_size?: number
 	clustering_method: string
+	color_space?: string
 	saturation_factor?: string
 	saturation_threshold?: number
 	runtime?: string
