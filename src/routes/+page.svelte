@@ -1,12 +1,12 @@
 <script lang="ts">
 import "../app.css"
 import type { Movie } from "$lib/types"
-import type { PageData } from "./$types"
+import type { PageProps } from "./$types"
 import BackToTop from "./BackToTop.svelte"
 import MovieCard from "./MovieCard.svelte"
 import ThemeToggle from "./ThemeToggle.svelte"
 
-const { data } = $props<{ data: PageData }>()
+const { data }: PageProps = $props()
 const { movies } = data
 
 // Log the version when the component initializes
