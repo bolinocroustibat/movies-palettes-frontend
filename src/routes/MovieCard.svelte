@@ -1,7 +1,7 @@
 <script lang="ts">
 import type { Movie } from "$lib/types"
-import PaletteCard from "./PaletteCard.svelte"
 import { generateSlug } from "$lib/utils"
+import PaletteCard from "./PaletteCard.svelte"
 
 interface Props {
 	movie: Movie
