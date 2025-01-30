@@ -40,6 +40,20 @@
 		"svelte5_reactivity": {
 			"pattern": "\\$:",
 			"message": "Use '$derived' or '$effect' in Svelte 5 instead of '$:' reactive statements"
+		},
+		"bun_sqlite_import": {
+			"pattern": "bun:sqlite3",
+			"message": "Use 'bun:sqlite' for Bun's SQLite package",
+			"replacement": "bun:sqlite"
+		},
+		"sveltekit_request_event": {
+			"pattern": "({ params })",
+			"message": "Add RequestEvent type for SvelteKit endpoint parameters",
+			"replacement": "({ params }: RequestEvent)"
+		},
+		"sveltekit_imports_order": {
+			"pattern": "import.*from.*@sveltejs/kit.*\n.*import.*from.*\\$lib",
+			"message": "Import $lib modules before @sveltejs/kit modules"
 		}
 	}
 }
