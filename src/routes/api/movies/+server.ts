@@ -12,7 +12,10 @@ export const GET: RequestHandler = async ({ params }: RequestEvent) => {
 	try {
 		const movies = db
 			.query<Movie>(
-				"SELECT id, title, director, year FROM movies ORDER BY title",
+				`SELECT DISTINCT m.id, m.title, m.director, m.year 
+				FROM movies m
+				INNER JOIN palettes p ON m.id = p.movie_id
+				ORDER BY m.title`,
 			)
 			.all()
 
