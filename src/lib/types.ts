@@ -11,6 +11,7 @@ export interface Movie {
 	length?: number
 	frames?: number
 	added?: string // DATETIME field
+	slug: string  // Adding slug as required field
 	palettes?: Palette[] // Virtual field for relationships
 }
 
@@ -27,7 +28,7 @@ export interface Palette {
 	resize_width?: number
 	resize_height?: number
 	batch_size?: number
-	clustering_method: string
+	clustering_method?: string
 	color_space?: string
 	saturation_factor?: string
 	saturation_threshold?: number
