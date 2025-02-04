@@ -6,6 +6,11 @@ import type { RequestEvent, RequestHandler } from "./$types"
 
 const DB_PATH = "./static/movies.db"
 
+const corsHeaders = {
+	"Access-Control-Allow-Origin": "*.adriencarpentier.com",
+	"Access-Control-Allow-Methods": "GET",
+}
+
 export const GET: RequestHandler = async ({ params }: RequestEvent) => {
 	const { movieName } = params
 	const db = new Database(DB_PATH, { readonly: true })
@@ -36,13 +41,16 @@ export const GET: RequestHandler = async ({ params }: RequestEvent) => {
 			colors: palette.colors ? JSON.parse(palette.colors) : [],
 		}))
 
-		return json({
-			movie,
-			palettes: formattedPalettes,
-		})
+		return json(
+			{ movie, palettes: formattedPalettes },
+			{ headers: corsHeaders },
+		)
 	} catch (error) {
 		console.error("[API] Database error:", error)
-		return new Response("Internal Server Error", { status: 500 })
+		return new Response("Internal Server Error", {
+			status: 500,
+			headers: corsHeaders,
+		})
 	} finally {
 		db.close()
 	}

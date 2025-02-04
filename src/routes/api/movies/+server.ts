@@ -6,6 +6,12 @@ import type { RequestEvent, RequestHandler } from "./$types"
 
 const DB_PATH = "./static/movies.db"
 
+// Add CORS headers helper
+const corsHeaders = {
+	"Access-Control-Allow-Origin": "*.adriencarpentier.com",
+	"Access-Control-Allow-Methods": "GET",
+}
+
 export const GET: RequestHandler = async ({ params }: RequestEvent) => {
 	const db = new Database(DB_PATH, { readonly: true })
 
@@ -35,26 +41,33 @@ export const GET: RequestHandler = async ({ params }: RequestEvent) => {
 			.all()
 
 		// Format movies with their latest palette
-		const formattedMovies = movies.map((movie): Movie => ({
-			id: movie.id,
-			title: movie.title,
-			director: movie.director,
-			year: movie.year,
-			slug: generateSlug(movie.title),
-			palettes: movie.palette_id ? [{
-				id: movie.palette_id,
-				colors: movie.colors ? JSON.parse(movie.colors) : [],
-				calculation_date: movie.calculation_date || undefined,
-				clusters_nb: movie.clusters_nb!
-			}] : []
-		}))
+		const formattedMovies = movies.map(
+			(movie): Movie => ({
+				id: movie.id,
+				title: movie.title,
+				director: movie.director,
+				year: movie.year,
+				slug: generateSlug(movie.title),
+				palettes: movie.palette_id
+					? [
+							{
+								id: movie.palette_id,
+								colors: movie.colors ? JSON.parse(movie.colors) : [],
+								calculation_date: movie.calculation_date || undefined,
+								clusters_nb: movie.clusters_nb!,
+							},
+						]
+					: [],
+			}),
+		)
 
-		return json({
-			movies: formattedMovies,
-		})
+		return json({ movies: formattedMovies }, { headers: corsHeaders })
 	} catch (error) {
 		console.error("[API] Database error:", error)
-		return new Response("Internal Server Error", { status: 500 })
+		return new Response("Internal Server Error", {
+			status: 500,
+			headers: corsHeaders,
+		})
 	} finally {
 		db.close()
 	}

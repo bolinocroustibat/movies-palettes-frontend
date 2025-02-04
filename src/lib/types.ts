@@ -11,7 +11,7 @@ export interface Movie {
 	length?: number
 	frames?: number
 	added?: string // DATETIME field
-	slug: string  // Adding slug as required field
+	slug: string // Adding slug as required field
 	palettes?: Palette[] // Virtual field for relationships
 }
 
