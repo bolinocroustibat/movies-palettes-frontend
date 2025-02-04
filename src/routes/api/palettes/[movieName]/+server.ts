@@ -1,19 +1,16 @@
 import { Database } from "bun:sqlite"
 import type { Movie, Palette } from "$lib/types"
 import { generateSlug } from "$lib/utils"
+import { corsHeaders } from "$lib/cors"
 import { json } from "@sveltejs/kit"
 import type { RequestEvent, RequestHandler } from "./$types"
 
 const DB_PATH = "./static/movies.db"
 
-const corsHeaders = {
-	"Access-Control-Allow-Origin": "https://automatons.adriencarpentier.com",
-	"Access-Control-Allow-Methods": "GET",
-}
-
-export const GET: RequestHandler = async ({ params }: RequestEvent) => {
+export const GET: RequestHandler = async ({ request, params }: RequestEvent) => {
 	const { movieName } = params
 	const db = new Database(DB_PATH, { readonly: true })
+	const origin = request.headers.get("origin")
 
 	try {
 		// First find the movie by matching the slug
@@ -43,13 +40,13 @@ export const GET: RequestHandler = async ({ params }: RequestEvent) => {
 
 		return json(
 			{ movie, palettes: formattedPalettes },
-			{ headers: corsHeaders },
+			{ headers: corsHeaders(origin) },
 		)
 	} catch (error) {
 		console.error("[API] Database error:", error)
 		return new Response("Internal Server Error", {
 			status: 500,
-			headers: corsHeaders,
+			headers: corsHeaders(origin),
 		})
 	} finally {
 		db.close()

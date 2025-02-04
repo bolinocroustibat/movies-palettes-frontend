@@ -1,19 +1,15 @@
 import { Database } from "bun:sqlite"
 import type { Movie } from "$lib/types"
 import { generateSlug } from "$lib/utils"
+import { corsHeaders } from "$lib/cors"
 import { json } from "@sveltejs/kit"
 import type { RequestEvent, RequestHandler } from "./$types"
 
 const DB_PATH = "./static/movies.db"
 
-// Add CORS headers helper
-const corsHeaders = {
-	"Access-Control-Allow-Origin": "https://automatons.adriencarpentier.com",
-	"Access-Control-Allow-Methods": "GET",
-}
-
-export const GET: RequestHandler = async ({ params }: RequestEvent) => {
+export const GET: RequestHandler = async ({ request }: RequestEvent) => {
 	const db = new Database(DB_PATH, { readonly: true })
+	const origin = request.headers.get("origin")
 
 	try {
 		const movies = db
@@ -61,12 +57,12 @@ export const GET: RequestHandler = async ({ params }: RequestEvent) => {
 			}),
 		)
 
-		return json({ movies: formattedMovies }, { headers: corsHeaders })
+		return json({ movies: formattedMovies }, { headers: corsHeaders(origin) })
 	} catch (error) {
 		console.error("[API] Database error:", error)
 		return new Response("Internal Server Error", {
 			status: 500,
-			headers: corsHeaders,
+			headers: corsHeaders(origin),
 		})
 	} finally {
 		db.close()
