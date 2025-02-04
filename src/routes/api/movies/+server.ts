@@ -1,5 +1,5 @@
 import { Database } from "bun:sqlite"
-import type { Movie, Palette } from "$lib/types"
+import type { Movie } from "$lib/types"
 import { generateSlug } from "$lib/utils"
 import { json } from "@sveltejs/kit"
 import type { RequestEvent, RequestHandler } from "./$types"
@@ -8,7 +8,7 @@ const DB_PATH = "./static/movies.db"
 
 // Add CORS headers helper
 const corsHeaders = {
-	"Access-Control-Allow-Origin": "*.adriencarpentier.com",
+	"Access-Control-Allow-Origin": "https://automatons.adriencarpentier.com",
 	"Access-Control-Allow-Methods": "GET",
 }
 

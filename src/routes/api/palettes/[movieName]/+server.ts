@@ -7,7 +7,7 @@ import type { RequestEvent, RequestHandler } from "./$types"
 const DB_PATH = "./static/movies.db"
 
 const corsHeaders = {
-	"Access-Control-Allow-Origin": "*.adriencarpentier.com",
+	"Access-Control-Allow-Origin": "https://automatons.adriencarpentier.com",
 	"Access-Control-Allow-Methods": "GET",
 }
 
