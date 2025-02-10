@@ -1,0 +1,6 @@
+import { handleErrorWithSentry, Replay } from "@sentry/sveltekit"
+import { initSentry } from "$lib/sentry"
+
+initSentry()
+
+export const handleError = handleErrorWithSentry()
