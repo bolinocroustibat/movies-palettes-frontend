@@ -60,6 +60,7 @@ jobs:
       - name: Build with Bun
         env:
           VITE_ENV: production
+          PUBLIC_SENTRY_DSN: ${{ secrets.PUBLIC_SENTRY_DSN }}
         run: |
           bun run build
           cp -r package.json bun.lock build/
