@@ -120,3 +120,13 @@ jobs:
             echo "Error: Deployed application is not responding"
             exit 1
           fi
+
+      - name: Create Sentry "${{ github.ref_name }}" release
+        uses: getsentry/action-release@v1.7.0
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: "adrien-carpentier"
+          SENTRY_PROJECT: "movies-palettes"
+        with:
+          environment: production
+          version: ${{ github.ref_name }}
