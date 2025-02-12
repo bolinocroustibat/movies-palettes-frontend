@@ -1,12 +1,9 @@
-name: Deploy to prod when push on main
+name: Deploy to prod when tag
 
 on:
   push:
-    branches:
-      - main
     tags:
       - '*'
-  workflow_dispatch:
 
 jobs:
   bump-version:
