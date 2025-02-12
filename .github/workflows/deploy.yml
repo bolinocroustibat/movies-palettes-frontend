@@ -106,10 +106,11 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Deploy to Server
-        run: |
-          rsync -avz --checksum --exclude '.git' --delete ./build/ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:${{ secrets.SERVER_PATH }}
-          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "${{ secrets.SERVER_PATH }}/deploy.sh"
+      - name: Copy build to server
+        run: rsync -avz --checksum --exclude '.git' --delete ./build/ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:${{ secrets.SERVER_PATH }}
+
+      - name: Launch deployment script
+        run: ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "${{ secrets.SERVER_PATH }}/deploy.sh"
 
       - name: Test if deployed app responds
         run: |
