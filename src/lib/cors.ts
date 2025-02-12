@@ -2,6 +2,7 @@ const ALLOWED_ORIGINS = [
 	"http://localhost:5173",
 	"http://localhost:3000",
 	"https://automatons.adriencarpentier.com",
+	"https://automata.adriencarpentier.com"
 ] as const
 
 export const corsHeaders = (origin: string | null) => {
