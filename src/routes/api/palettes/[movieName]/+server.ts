@@ -1,6 +1,6 @@
 import { Database } from "bun:sqlite"
 import type { Movie, Palette } from "$lib/types"
-import { generateSlug } from "$lib/utils"
+import { generateSlug, rgbToHex } from "$lib/utils"
 import { corsHeaders } from "$lib/cors"
 import { json } from "@sveltejs/kit"
 import type { RequestEvent, RequestHandler } from "./$types"
@@ -35,7 +35,9 @@ export const GET: RequestHandler = async ({ request, params }: RequestEvent) => 
 
 		const formattedPalettes = palettes.map((palette) => ({
 			...palette,
-			colors: palette.colors ? JSON.parse(palette.colors) : [],
+			colors: palette.colors 
+				? JSON.parse(palette.colors).map((rgb: [number, number, number]) => rgbToHex(rgb))
+				: [],
 		}))
 
 		return json(
