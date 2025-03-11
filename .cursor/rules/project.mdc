@@ -1,0 +1,25 @@
+---
+description: Project-wide configuration and context
+globs: ["**/*"]
+---
+
+# Project Context
+
+## Language & Framework
+- TypeScript
+- SvelteKit 2.x with Svelte 5
+- TailwindCSS
+
+## Documentation Links
+- Svelte 5: https://svelte-llm.khromov.se/svelte
+- TailwindCSS: https://tailwindcss.com/docs
+- Svelte: https://svelte.dev/docs
+- TypeScript: https://www.typescriptlang.org/docs/
+
+## Include/Exclude Patterns
+- Include: src/**/*.{ts,js,svelte}, *.config.{ts,js}
+- Exclude: node_modules/**, .svelte-kit/**, build/**
+
+## API Configuration
+- Svelte docs refresh: daily
+- TypeScript strict mode: enabled 

@@ -1,0 +1,23 @@
+---
+description: TypeScript and Bun SQLite rules
+globs: ["**/*.ts"]
+alwaysApply: false
+---
+
+# TypeScript Configuration
+
+This project uses strict TypeScript settings:
+
+## Compiler Options
+- Strict mode is enabled
+- JavaScript files are type-checked
+- All TypeScript strict flags are enabled
+
+## Best Practices
+- Always define types for function parameters and return values
+- Use TypeScript's strict null checks
+- Avoid using `any` type
+- Add `RequestEvent` type for SvelteKit endpoint parameters
+- Use `bun:sqlite` instead of `bun:sqlite3` for Bun's SQLite package
+
+@file:src/lib/types.ts 

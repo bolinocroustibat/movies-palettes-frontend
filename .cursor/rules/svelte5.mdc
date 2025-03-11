@@ -1,0 +1,30 @@
+---
+description: Rules for Svelte 5 syntax and patterns
+globs: ["**/*.svelte"]
+alwaysApply: false
+---
+
+# Svelte 5 Rules
+
+## Event Handler Syntax
+When working with event handlers in Svelte 5, use the new syntax:
+- Use `onclick` instead of `on:click`
+- Use `onkeydown` instead of `on:keydown`
+- Use `oninput` instead of `on:input`
+- Use `onchange` instead of `on:change`
+- Use `onsubmit` instead of `on:submit`
+
+## Reactivity Patterns
+When working with reactivity in Svelte 5:
+- Use `$derived` or `$effect` instead of `$:` for reactive statements
+- Example: 
+  ```svelte
+  $effect(() => {
+    // Your reactive code here
+  })
+  ```
+
+## Import Order
+- Import `$lib` modules before `@sveltejs/kit` modules
+
+@file:src/lib/types.ts 
