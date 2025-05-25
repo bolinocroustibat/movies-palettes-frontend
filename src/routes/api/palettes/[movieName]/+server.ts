@@ -1,13 +1,16 @@
 import { Database } from "bun:sqlite"
+import { corsHeaders } from "$lib/cors"
 import type { Movie, Palette } from "$lib/types"
 import { generateSlug, rgbToHex } from "$lib/utils"
-import { corsHeaders } from "$lib/cors"
 import { json } from "@sveltejs/kit"
 import type { RequestEvent, RequestHandler } from "./$types"
 
 const DB_PATH = "./static/movies.db"
 
-export const GET: RequestHandler = async ({ request, params }: RequestEvent) => {
+export const GET: RequestHandler = async ({
+	request,
+	params,
+}: RequestEvent) => {
 	const { movieName } = params
 	const db = new Database(DB_PATH, { readonly: true })
 	const origin = request.headers.get("origin")
@@ -35,8 +38,10 @@ export const GET: RequestHandler = async ({ request, params }: RequestEvent) => 
 
 		const formattedPalettes = palettes.map((palette) => ({
 			...palette,
-			colors: palette.colors 
-				? JSON.parse(palette.colors).map((rgb: [number, number, number]) => rgbToHex(rgb))
+			colors: palette.colors
+				? JSON.parse(palette.colors).map((rgb: [number, number, number]) =>
+						rgbToHex(rgb),
+					)
 				: [],
 		}))
 

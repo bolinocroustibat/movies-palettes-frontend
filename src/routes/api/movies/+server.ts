@@ -1,7 +1,7 @@
 import { Database } from "bun:sqlite"
+import { corsHeaders } from "$lib/cors"
 import type { Movie } from "$lib/types"
 import { generateSlug, rgbToHex } from "$lib/utils"
-import { corsHeaders } from "$lib/cors"
 import { json } from "@sveltejs/kit"
 import type { RequestEvent, RequestHandler } from "./$types"
 
@@ -49,8 +49,10 @@ export const GET: RequestHandler = async ({ request }: RequestEvent) => {
 							{
 								id: movie.palette_id,
 								movie_id: movie.id,
-								colors: movie.colors 
-									? JSON.parse(movie.colors).map((rgb: [number, number, number]) => rgbToHex(rgb))
+								colors: movie.colors
+									? JSON.parse(movie.colors).map(
+											(rgb: [number, number, number]) => rgbToHex(rgb),
+										)
 									: [],
 								calculation_date: movie.calculation_date || undefined,
 								clusters_nb: movie.clusters_nb!,
