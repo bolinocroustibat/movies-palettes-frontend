@@ -18,10 +18,43 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Download movies DB to static directory
+      - name: Download and verify new movies DB
         run: |
-          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "wget -O ${{ secrets.SERVER_PATH }}/static/movies.db '${{ vars.MOVIES_SQLITE_URL }}'"
+          # Create temp directory on server
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "mkdir -p ${{ secrets.SERVER_PATH }}/temp"
+          
+          # Download new database to temp
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "wget -O ${{ secrets.SERVER_PATH }}/temp/movies.db.new '${{ vars.MOVIES_SQLITE_URL }}'"
+          
+          # Verify the new database
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "cd ${{ secrets.SERVER_PATH }}/temp && bun -e '
+            try {
+              const { Database } = require(\"bun:sqlite\");
+              const db = new Database(\"movies.db.new\", { readonly: true });
+              const count = db.query(\"SELECT COUNT(*) as count FROM movies\").get().count;
+              console.log(\"Database OK:\", count, \"movies found\");
+              process.exit(0);
+            } catch (e) {
+              console.error(\"Invalid database file:\", e);
+              process.exit(1);
+            }'"
 
-      - name: Test if the downloaded file is a valid SQLite database
+      - name: Update database and restart container
         run: |
-          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "cd ${{ secrets.SERVER_PATH }} && bun -e 'try { const { Database } = require(\"bun:sqlite\"); const db = new Database(\"${{ secrets.SERVER_PATH }}/static/movies.db\", { readonly: true }); const count = db.query(\"SELECT COUNT(*) as count FROM movies\").get().count; console.log(\"Database OK:\", count, \"movies found\"); process.exit(0); } catch (e) { console.error(\"Invalid database file:\", e); process.exit(1); }'"
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "
+            # Move new DB to static volume directory
+            mv ${{ secrets.SERVER_PATH }}/temp/movies.db.new ${{ secrets.SERVER_PATH }}/static/movies.db
+            
+            # Cleanup temp directory
+            rm -rf ${{ secrets.SERVER_PATH }}/temp
+            
+            # Restart the container to ensure it picks up the new database
+            cd ${{ secrets.SERVER_PATH }} && docker compose -f docker-compose.prod.yml restart movies-palettes
+          "
+
+      - name: Test if app responds with new database
+        run: |
+          if ! ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "curl -s --retry 5 --retry-delay 2 http://localhost:${APP_PORT:-3000} > /dev/null"; then
+            echo "Error: Application is not responding after database update"
+            exit 1
+          fi
