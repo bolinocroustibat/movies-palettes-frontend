@@ -9,18 +9,9 @@ jobs:
   bump-version:
     name: Bump version to ${{ github.ref_name }}
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/')
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-
-      - name: Cache Bun dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.bun/install/cache
-          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-bun-
 
       - name: Bump version in package.json to ${{ github.ref_name }}
         run: sed -E -i 's/"version":[[:space:]]"[0-9]+.[0-9]+.[0-9]+"/"version":\ "${{ github.ref_name }}"/g' ./package.json
@@ -38,64 +29,32 @@ jobs:
     name: Build and deploy ${{ github.ref_name }} to prod
     runs-on: ubuntu-latest
     needs: bump-version
-    if: always()
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Install Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      - name: Install dependencies with Bun
-        run: bun install --frozen-lockfile
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Download movies DB to static directory
         run: |
           mkdir -p static
           wget -O static/movies.db '${{ vars.MOVIES_SQLITE_URL }}'
 
-      - name: Build with Bun
-        env:
-          VITE_ENV: production
-        run: |
-          bun run build
-          cp -r package.json bun.lock build/
-          cp -r static build/
-
-      - name: Create deployment script
-        run: |
-          cat << 'EOF' > build/deploy.sh
-          #!/bin/bash
-          set -e  # Exit on error
-          cd "$(dirname "$0")"
-
-          echo "Starting with PM2..."
-          pm2 delete movies-palettes || true
-
-          # Start PM2 with Bun
-          pm2 start index.js \
-            --name movies-palettes \
-            --env production \
-            --interpreter bun \
-            --merge-logs \
-            --log ./movies-palettes.log \
-            --time \
-            -- --port 3000
-
-          # Wait for the process to stabilize
-          sleep 1
-
-          if ! curl -s -f http://localhost:3000/; then
-            echo "Server failed to respond"
-            pm2 logs movies-palettes --lines 20
-            exit 1
-          fi
-
-          echo "Server is running!"
-          EOF
-          chmod +x build/deploy.sh
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/movies-palettes:${{ github.ref_name }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/movies-palettes:latest
 
       - name: Setup SSH key
         uses: webfactory/ssh-agent@v0.9.1
@@ -103,25 +62,40 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Adding server to known hosts
-        shell: bash
         run: |
           mkdir -p ~/.ssh
           ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Copy build to server
-        run: rsync -avz --checksum --exclude '.git' --delete ./build/ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:${{ secrets.SERVER_PATH }}
+      - name: Configure Docker login on server
+        run: |
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "echo '${{ secrets.DOCKERHUB_TOKEN }}' | docker login -u '${{ secrets.DOCKERHUB_USERNAME }}' --password-stdin"
 
-      - name: Launch deployment script
-        run: ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "${{ secrets.SERVER_PATH }}/deploy.sh"
+      - name: Deploy to production
+        run: |
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "cd ${{ secrets.SERVER_PATH }} && \
+            set -a && source .env && set +a && \
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/movies-palettes:${{ github.ref_name }} && \
+            docker stop movies-palettes || true && \
+            docker rm movies-palettes || true && \
+            docker run -d \
+              --name movies-palettes \
+              --restart unless-stopped \
+              -p \${APP_PORT:-3000}:3000 \
+              -v ./static:/app/static \
+              -e VITE_ENV=production \
+              -e PUBLIC_SENTRY_DSN=${{ secrets.PUBLIC_SENTRY_DSN }} \
+              ${{ secrets.DOCKERHUB_USERNAME }}/movies-palettes:${{ github.ref_name }}"
 
       - name: Test if deployed app responds
         run: |
-          if ! ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "curl -s --retry 5 --retry-delay 2 http://localhost:3000 > /dev/null"; then
-            echo "Error: Deployed application is not responding"
-            exit 1
-          fi
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "cd ${{ secrets.SERVER_PATH }} && \
+            set -a && source .env && set +a && \
+            if ! curl -s --retry 5 --retry-delay 2 http://localhost:\${APP_PORT:-3000} > /dev/null; then \
+              echo 'Error: Deployed application is not responding' && \
+              exit 1; \
+            fi"
 
-      - name: Create Sentry "${{ github.ref_name }}" release
+      - name: Create Sentry release
         uses: getsentry/action-release@v3
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
@@ -129,4 +103,4 @@ jobs:
           SENTRY_PROJECT: "movies-palettes"
         with:
           environment: production
-          version: ${{ github.ref_name }}
+          release: ${{ github.ref_name }}

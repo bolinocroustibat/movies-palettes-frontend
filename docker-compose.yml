@@ -1,0 +1,17 @@
+services:
+  app:
+    container_name: movies-palettes-app
+    image: movies-palettes:${TAG:-latest}
+    build: .
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-3000}:3000"
+    volumes:
+      - ./static:/app/static
+    environment:
+      - VITE_ENV=${VITE_ENV}
+      - PUBLIC_SENTRY_DSN=${PUBLIC_SENTRY_DSN}
+      # This variable need to be set:
+      # - In .env for local development
+      # - As GitHub vars/secrets for workflows
+      # - MOVIES_SQLITE_URL=${MOVIES_SQLITE_URL}
