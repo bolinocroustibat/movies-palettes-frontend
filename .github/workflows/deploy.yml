@@ -36,11 +36,12 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Login to Docker Hub
+      - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Download movies DB to static directory
         run: |
@@ -53,47 +54,52 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/movies-palettes:${{ github.ref_name }}
-            ${{ secrets.DOCKERHUB_USERNAME }}/movies-palettes:latest
-
-      - name: Setup SSH key
-        uses: webfactory/ssh-agent@v0.9.1
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      - name: Adding server to known hosts
-        run: |
-          mkdir -p ~/.ssh
-          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
-
-      - name: Configure Docker login on server
-        run: |
-          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "echo '${{ secrets.DOCKERHUB_TOKEN }}' | docker login -u '${{ secrets.DOCKERHUB_USERNAME }}' --password-stdin"
+            ghcr.io/${{ github.repository }}:${{ github.ref_name }}
+            ghcr.io/${{ github.repository }}:latest
 
       - name: Deploy to production
-        run: |
-          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "cd ${{ secrets.SERVER_PATH }} && \
-            set -a && source .env && set +a && \
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/movies-palettes:${{ github.ref_name }} && \
-            docker stop movies-palettes || true && \
-            docker rm movies-palettes || true && \
-            docker run -d \
-              --name movies-palettes \
-              --restart unless-stopped \
-              -p \${APP_PORT:-3000}:3000 \
-              -v ./static:/app/static \
-              -e VITE_ENV=production \
-              -e PUBLIC_SENTRY_DSN=${{ secrets.PUBLIC_SENTRY_DSN }} \
-              ${{ secrets.DOCKERHUB_USERNAME }}/movies-palettes:${{ github.ref_name }}"
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            set -e  # Exit on any error
 
-      - name: Test if deployed app responds
-        run: |
-          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "cd ${{ secrets.SERVER_PATH }} && \
-            set -a && source .env && set +a && \
-            if ! curl -s --retry 5 --retry-delay 2 http://localhost:\${APP_PORT:-3000} > /dev/null; then \
-              echo 'Error: Deployed application is not responding' && \
-              exit 1; \
-            fi"
+            # Ensure directory exists
+            mkdir -p "${{ secrets.SERVER_PATH }}"
+            cd "${{ secrets.SERVER_PATH }}"
+
+            # Clone or update the repository for configuration files
+            if [ -d .git ]; then
+              git fetch
+              git reset --hard origin/main
+            else
+              git clone https://github.com/${{ github.repository }}.git .
+            fi
+
+            # Login to GitHub Container Registry
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+
+            # Set Docker image variables
+            export GITHUB_REPOSITORY="${{ github.repository }}"
+            export TAG="${{ github.ref_name }}"
+
+            # Pull and deploy new version
+            docker compose pull
+            docker compose up -d --force-recreate app
+            
+            # Wait for app to be ready
+            for i in {1..5}; do
+              if curl -s "http://localhost:${APP_PORT:-3000}" > /dev/null; then
+                echo "Application is up and running"
+                exit 0
+              fi
+              echo "Waiting for application to start... (attempt $i/5)"
+              sleep 2
+            done
+            echo "Error: Application failed to start"
+            exit 1
 
       - name: Create Sentry release
         uses: getsentry/action-release@v3
