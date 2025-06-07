@@ -57,7 +57,7 @@ jobs:
             ghcr.io/${{ github.repository }}:${{ github.ref_name }}
             ghcr.io/${{ github.repository }}:latest
 
-      - name: Deploy to production
+      - name: Execute server commands for deploy
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.SERVER_HOST }}
@@ -67,14 +67,17 @@ jobs:
             set -e  # Exit on any error
 
             # Ensure directory exists
-            mkdir -p "${{ secrets.SERVER_PATH }}"
-            cd "${{ secrets.SERVER_PATH }}"
+            mkdir -p ${{ secrets.SERVER_PATH }}
+            cd ${{ secrets.SERVER_PATH }}
 
             # Clone or update the repository for configuration files
             if [ -d .git ]; then
               git fetch
               git reset --hard origin/main
             else
+              # Clean directory, including nodes_modules but preserving .env
+              rm -rf node_modules
+              find . -maxdepth 1 ! -name '.' ! -name '..' ! -name '.env' -exec rm -rf {} +
               git clone https://github.com/${{ github.repository }}.git .
             fi
 
@@ -85,21 +88,17 @@ jobs:
             export GITHUB_REPOSITORY="${{ github.repository }}"
             export TAG="${{ github.ref_name }}"
 
-            # Pull and deploy new version
+            # Pull the new Docker images and restart services
             docker compose pull
-            docker compose up -d --force-recreate app
-            
-            # Wait for app to be ready
-            for i in {1..5}; do
-              if curl -s "http://localhost:${APP_PORT:-3000}" > /dev/null; then
-                echo "Application is up and running"
-                exit 0
-              fi
-              echo "Waiting for application to start... (attempt $i/5)"
-              sleep 2
-            done
-            echo "Error: Application failed to start"
-            exit 1
+            docker compose down
+            docker compose up -d
+
+            # Verify service is running
+            sleep 3  # Give the service time to start
+            if ! docker compose ps --format json | grep -q "running"; then
+              docker compose logs
+              exit 1
+            fi
 
       - name: Create Sentry release
         uses: getsentry/action-release@v3
