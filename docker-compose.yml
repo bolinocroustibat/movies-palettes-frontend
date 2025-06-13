@@ -1,7 +1,7 @@
 services:
   app:
     container_name: movies-palettes-app
-    image: ghcr.io/${GITHUB_REPOSITORY}:${TAG:-latest}
+    image: ghcr.io/bolinocroustibat/movies-palettes:${TAG:-latest}
     build: .
     restart: unless-stopped
     ports:
