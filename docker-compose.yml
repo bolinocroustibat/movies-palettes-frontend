@@ -1,7 +1,7 @@
 services:
   app:
     container_name: movies-palettes-app
-    image: ghcr.io/bolinocroustibat/movies-palettes:${TAG:-latest}
+    image: ghcr.io/bolinocroustibat/movies-palettes-frontend:${TAG:-latest}
     build: .
     restart: unless-stopped
     ports:
@@ -10,7 +10,6 @@ services:
       - ./static:/app/static
     environment:
       - VITE_ENV=${VITE_ENV}
-      - PUBLIC_SENTRY_DSN=${PUBLIC_SENTRY_DSN}
       # This variable need to be set:
       # - In .env for local development
       # - As GitHub vars/secrets for workflows
