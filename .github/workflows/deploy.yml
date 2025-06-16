@@ -104,6 +104,9 @@ jobs:
               exit 1
             fi
 
+      - name: Checkout repository for Sentry release
+        uses: actions/checkout@v4
+
       - name: Create Sentry release
         uses: getsentry/action-release@v3
         env:
