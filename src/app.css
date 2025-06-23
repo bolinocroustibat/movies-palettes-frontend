@@ -64,7 +64,8 @@
 @layer utilities {
 	@font-face {
 		font-family: "Windsor";
-		src: url("/fonts/windsor-light.woff") format("woff"),
+		src:
+			url("/fonts/windsor-light.woff") format("woff"),
 			/* Fallback for older browsers */ url("/fonts/windsor-light.otf")
 			format("opentype");
 		/* Final fallback */
