@@ -1,5 +1,5 @@
 services:
-  app:
+  frontend:
     container_name: movies-palettes-frontend
     image: ghcr.io/bolinocroustibat/movies-palettes-frontend:${TAG:-latest}
     build: .
