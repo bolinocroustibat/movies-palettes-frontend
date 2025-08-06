@@ -11,7 +11,7 @@ interface Props {
 const { movie, isExpanded, onToggle }: Props = $props()
 
 const latestPalette = $derived(
-	movie.palettes.reduce((latest, current) => {
+	movie.palettes?.reduce((latest, current) => {
 		if (!current.calculation_date) return latest
 		if (!latest.calculation_date) return current
 		return new Date(current.calculation_date) >
@@ -24,8 +24,7 @@ const latestPalette = $derived(
 const movieSlug = $derived(generateSlug(movie.title))
 </script>
 
-<!-- svelte-ignore a11y_click_events_have_key_events -->
-<!-- svelte-ignore a11y_no_static_element_interactions -->
+<!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
 <a 
 	href="#{movieSlug}"
 	class="block no-underline"
@@ -33,7 +32,7 @@ const movieSlug = $derived(generateSlug(movie.title))
 >
 	<div 
 		class="bg-white/80 dark:bg-neutral-900/80 rounded-xl p-6 border border-neutral-200 dark:border-neutral-800 cursor-pointer shadow-lg hover:shadow-xl hover:border-neutral-300 dark:hover:border-neutral-700 transition-[width,transform,opacity] duration-500 ease-in-out relative"
-		class:w-[292px]={!isExpanded || movie.palettes.length === 1}
+		class:w-[292px]={!isExpanded || movie.palettes?.length === 1}
 		class:w-auto={isExpanded && movie.palettes.length > 1}
 		class:scale-105={isExpanded}
 		class:z-10={isExpanded}
