@@ -7,11 +7,12 @@ Goes hand in hand with the [movies-palettes](https://github.com/adriencarpentier
 
 - [Bun](https://bun.sh) 1.0.x or higher
 - A [SQLite](https://www.sqlite.org/download.html) database
+- **Language**: TypeScript
 - **Framework**: SvelteKit 2.x with Svelte 5
 - **Styling**: TailwindCSS with custom configuration
 - **Build Tool**: Vite
-- **Language**: TypeScript
 - **Deployment**: GitHub Actions with automatic versioning
+- **Code Linting and Formatting**: [Biome](https://biomejs.dev)
 
 ## Database schema
 
