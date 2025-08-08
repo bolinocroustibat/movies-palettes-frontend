@@ -1,6 +1,6 @@
+import { Database } from "bun:sqlite"
 import type { Movie, Palette } from "$lib/types"
 import { sortColorsByProximity } from "$lib/utils"
-import { Database } from "bun:sqlite"
 import type { PageServerLoad } from "./$types"
 
 const DB_PATH = "./static/movies.db"

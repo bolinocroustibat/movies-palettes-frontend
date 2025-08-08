@@ -1,6 +1,6 @@
 <script lang="ts">
-import { browser } from "$app/environment"
 import { fade } from "svelte/transition"
+import { browser } from "$app/environment"
 
 let showButton = false
 

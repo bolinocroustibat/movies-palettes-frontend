@@ -1,8 +1,8 @@
+import { Database } from "bun:sqlite"
+import { json } from "@sveltejs/kit"
 import { corsHeaders } from "$lib/cors"
 import type { Movie, Palette } from "$lib/types"
 import { generateSlug, rgbToHex } from "$lib/utils"
-import { Database } from "bun:sqlite"
-import { json } from "@sveltejs/kit"
 import type { RequestEvent, RequestHandler } from "./$types"
 
 const DB_PATH = "./static/movies.db"

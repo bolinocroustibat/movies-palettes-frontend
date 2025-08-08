@@ -1,11 +1,13 @@
 <script lang="ts">
 import type { Palette } from "$lib/types"
+// biome-ignore lint/correctness/noUnusedImports: Used in Svelte template
 import { formatDate, rgbToCSS, rgbToHex } from "$lib/utils"
 
 interface Props {
 	palette: Palette
 	isExpanded: boolean
 }
+// biome-ignore lint/correctness/noUnusedVariables: Used in Svelte template
 const { palette, isExpanded }: Props = $props()
 </script>
 
