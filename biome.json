@@ -5,6 +5,11 @@
 			"semicolons": "asNeeded"
 		}
 	},
+	"css": {
+		"parser": {
+			"tailwindDirectives": true
+		}
+	},
 	"overrides": [
 		{
 			"includes": ["**/*.svelte"],
@@ -12,6 +17,10 @@
 				"rules": {
 					"style": {
 						"useConst": "off"
+					},
+					"correctness": {
+						"noUnusedImports": "off",
+						"noUnusedVariables": "off"
 					}
 				}
 			}

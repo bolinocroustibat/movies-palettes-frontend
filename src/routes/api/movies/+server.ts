@@ -55,7 +55,7 @@ export const GET: RequestHandler = async ({ request }: RequestEvent) => {
 										)
 									: [],
 								calculation_date: movie.calculation_date || undefined,
-								clusters_nb: movie.clusters_nb!,
+								clusters_nb: movie.clusters_nb || 0,
 							},
 						]
 					: [],

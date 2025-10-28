@@ -1,7 +1,5 @@
 <script lang="ts">
-// biome-ignore lint/correctness/noUnusedImports: Used in Svelte template
 import { Moon, Sun } from "@steeze-ui/heroicons"
-// biome-ignore lint/correctness/noUnusedImports: Used in Svelte template
 import { Icon } from "@steeze-ui/svelte-icon"
 import { onMount } from "svelte"
 
@@ -11,7 +9,6 @@ onMount(() => {
 	isDark = document.body.classList.contains("dark")
 })
 
-// biome-ignore lint/correctness/noUnusedVariables: Used in Svelte template
 function toggleTheme() {
 	isDark = !isDark
 	document.body.classList.toggle("dark")
